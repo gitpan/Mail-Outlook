@@ -13,3 +13,4 @@ t/10mail.t
 t/20mail.t
 t/90podtest.t
 t/91podcover.t
+t/testlib/Typelibs.pm

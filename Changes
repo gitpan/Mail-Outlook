@@ -1,5 +1,8 @@
 Revision history for Perl module Mail::Outlook.
 
+0.08    29/03/2005
+	- Added better checking for Outlook in typelib list
+
 0.07    27/03/2005
         - Reinstated strictures
         - Added better checking for Outlook being installed

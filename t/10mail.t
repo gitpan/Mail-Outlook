@@ -1,8 +1,13 @@
 use Test::More tests => 7;
 
+use lib 't/testlib';
+
 SKIP: {
-	eval "use Win32::OLE::Const 'Microsoft Outlook'";
+	eval "use Typelibs";
 	skip "Microsoft Outlook doesn't appear to be installed\n", 7	if($@);
+
+	my $vers = Typelibs::ExistsTypeLib('Microsoft Outlook');
+	skip "Microsoft Outlook doesn't appear to be installed\n", 7	unless($vers);
 
 	eval "use Mail::Outlook";
 	skip "Unable to make a connection to Microsoft Outlook\n", 7	if($@);

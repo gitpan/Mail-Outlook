@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 #----------------------------------------------------------------------------
 
@@ -239,7 +239,7 @@ Outlook (R) installed.
 
 =head1 AUTHOR
 
-Barbie, C< <<barbie@cpan.org>> >
+Barbie, <barbie@cpan.org>
 for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
 
 =head1 COPYRIGHT AND LICENSE
