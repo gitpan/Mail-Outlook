@@ -10,3 +10,9 @@ WriteMakefile(
       (ABSTRACT_FROM => 'lib/Mail/Outlook.pm',
        AUTHOR     => 'Barbie <barbie@cpan.org>') : ()),
 );
+
+print <<HERE;
+
+  Please note that Microsoft Outlook is required by this distribution.
+
+HERE

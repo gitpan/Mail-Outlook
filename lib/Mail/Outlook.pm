@@ -1,10 +1,10 @@
 package Mail::Outlook;
 
-#use warnings;
-#use strict;
+use warnings;
+use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 #----------------------------------------------------------------------------
 
@@ -32,17 +32,17 @@ Mail::Outlook - mail module to interface with Microsoft (R) Outlook (R).
 
   # get the first/last/next/previous message
   my $message = $folder->first();
-  my $message = $folder->next();
-  my $message = $folder->last();
-  my $message = $folder->previous();
+     $message = $folder->next();
+     $message = $folder->last();
+     $message = $folder->previous();
 
   # read the attributes of the current message
   my $text = $message->From();
-  my $text = $message->To();
-  my $text = $message->Cc();
-  my $text = $message->Bcc();
-  my $text = $message->Subject();
-  my $text = $message->Body();
+     $text = $message->To();
+     $text = $message->Cc();
+     $text = $message->Bcc();
+     $text = $message->Subject();
+     $text = $message->Body();
 
   # use Outlook to display the current message
   $message->display;
@@ -58,11 +58,11 @@ Mail::Outlook - mail module to interface with Microsoft (R) Outlook (R).
 
   # Or use a hash
   my %hash = (
-	To      => 'you@example.com',
-	Cc      => 'Them <them@example.com>',
-	Bcc     => 'Us <us@example.com>, anybody@example.com',
-	Subject => 'Blah Blah Blah',
-	Body    => 'Yadda Yadda Yadda',
+     To      => 'you@example.com',
+     Cc      => 'Them <them@example.com>',
+     Bcc     => 'Us <us@example.com>, anybody@example.com',
+     Subject => 'Blah Blah Blah',
+     Body    => 'Yadda Yadda Yadda',
   );
 
   my $message = $outlook->create(%hash);
@@ -184,7 +184,6 @@ sub create {
 
 1;
 
-
 __END__
 
 #----------------------------------------------------------------------------
@@ -230,12 +229,18 @@ Outlook (R) installed.
   Win32::OLE
   Win32::OLE::Const
 
+=head1 DSLIP
+
+  b - Beta testing
+  d - Developer
+  p - Perl-only
+  O - Object oriented
+  p - Standard-Perl: user may choose between GPL and Artistic
+
 =head1 AUTHOR
 
 Barbie, C< <<barbie@cpan.org>> >
 for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
-
-Birmingham Perl Mongers, L<http://birmingham.pm.org/>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.07';
 
 #----------------------------------------------------------------------------
 
@@ -160,7 +160,6 @@ sub previous {
 
 1;
 
-
 __END__
 
 #----------------------------------------------------------------------------
@@ -208,12 +207,18 @@ Outlook (R) installed.
   Win32::OLE
   Win32::OLE::Const
 
+=head1 DSLIP
+
+  b - Beta testing
+  d - Developer
+  p - Perl-only
+  O - Object oriented
+  p - Standard-Perl: user may choose between GPL and Artistic
+
 =head1 AUTHOR
 
 Barbie, C< <<barbie@cpan.org>> >
 for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
-
-Birmingham Perl Mongers, L<http://birmingham.pm.org/>
 
 =head1 COPYRIGHT AND LICENSE
 

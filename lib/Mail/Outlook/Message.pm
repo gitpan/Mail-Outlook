@@ -3,8 +3,8 @@ package Mail::Outlook::Message;
 use warnings;
 use strict;
 
-use vars qw($VERSION @ISA %EXPORT_TAGS @EXPORT @EXPORT_OK);
-$VERSION = '0.03';
+use vars qw($VERSION $AUTOLOAD);
+$VERSION = '0.07';
 
 #----------------------------------------------------------------------------
 
@@ -82,7 +82,8 @@ sub create {
 	my ($self,%hash) = @_;
 
 	# Create a new message object
-	$self->{message} = $self->{outlook}->CreateItem(olMailItem)		or return undef;
+	$self->{message} = $self->{outlook}->CreateItem(olMailItem)
+		or return undef;
 	$self->{readonly} = 0;
 
 	# pre-populate the fields
@@ -186,7 +187,9 @@ sub display {
 	my ($self,%hash) = @_;
 
 	# pre-populate the fields, if hash
-	foreach my $field (@autosubs) { $self->{$field} = $hash{$field} if($hash{$field}); }
+	foreach my $field (@autosubs) {
+		$self->{$field} = $hash{$field} if($hash{$field});
+	}
 
 	# we need a basic message fields
 	return 0	unless($self->{To} && $self->{Subject} && $self->{Body});
@@ -214,7 +217,9 @@ sub send {
 	my ($self,%hash) = @_;
 
 	# pre-populate the fields, if hash
-	foreach my $field (@autosubs) { $self->{$field} = $hash{$field} if($hash{$field}); }
+	foreach my $field (@autosubs) {
+		$self->{$field} = $hash{$field} if($hash{$field});
+	}
 
 	# we need a basic message fields
 	return 0	unless($self->{To} && $self->{Subject} && $self->{Body});
@@ -334,12 +339,18 @@ Outlook (R) installed.
   Win32::OLE
   Win32::OLE::Const
 
+=head1 DSLIP
+
+  b - Beta testing
+  d - Developer
+  p - Perl-only
+  O - Object oriented
+  p - Standard-Perl: user may choose between GPL and Artistic
+
 =head1 AUTHOR
 
 Barbie, C< <<barbie@cpan.org>> >
 for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
-
-Birmingham Perl Mongers, L<http://birmingham.pm.org/>
 
 =head1 COPYRIGHT AND LICENSE
 

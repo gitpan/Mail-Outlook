@@ -46,12 +46,18 @@ TODO
   Other Mail Folders
   More Tests
 
+DSLIP
+
+  b - Beta testing
+  d - Developer
+  p - Perl-only
+  O - Object oriented
+  p - Standard-Perl: user may choose between GPL and Artistic
+
 AUTHOR
 
 Barbie <barbie@cpan.org>
 for Miss Barbell Productions, http://www.missbarbell.co.uk
-
-Birmingham Perl Mongers, http://birmingham.pm.org/
 
 COPYRIGHT AND LICENCE
 
