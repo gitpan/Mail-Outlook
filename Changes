@@ -1,0 +1,30 @@
+Revision history for Perl module Mail::Outlook.
+
+0.06	26/01/2005
+	- POD and comment clean up
+
+0.05  Mon Jan 19 13:30:16 GMTST 2004
+	- removed all Exporter references.
+
+0.04  Tue Oct 14 15:48:31 GMTDT 2003
+	- Rewrote main module and extended it to include
+	  - Mail::Outlook::Folder
+	  - Mail::Outlook::Message
+	- now handles reading messages from
+	  - Inbox
+	  - Outbox
+	  - Sent Items
+	  - and sub-folders of the above
+
+0.03  Wed Oct  8 13:04:18 GMTDT 2003
+	- patch added to cpan-testing directory
+	- POD updates
+
+0.02  Wed Oct  1 13:03:43 GMTDT 2003
+	- POD fixed and updated, thanks to djberg96
+	- Finished the From() function
+	- Fixed the send() to send and not just display ... D'oh!
+
+0.01  Mon Sep 29 14:13:56 GMTDT 2003
+	- original version;
+
