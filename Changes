@@ -1,5 +1,11 @@
 Revision history for Perl module Mail::Outlook.
 
+0.09    09/08/2005
+	- Some items in a mail folder may actually be a MeetingItem or  a
+	  AppointmentItem, which don't contain the same fields as a MailItem.
+	  A quick fix to return undef has been used, but this is not the
+	  preferred solution. (Manjunath S.)
+
 0.08    29/03/2005
 	- Added better checking for Outlook in typelib list
 

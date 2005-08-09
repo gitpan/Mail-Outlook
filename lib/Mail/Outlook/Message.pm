@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 #----------------------------------------------------------------------------
 
@@ -56,12 +56,12 @@ failure. To see the last error use 'Win32::OLE->LastError();'.
 =cut
 
 sub new {
-	my ($self, $outlook) = @_;
+	my ($self, $outlook, $message) = @_;
 
 	# create an attributes hash
 	my $atts = {
 		'outlook'	=> $outlook,
-		'message'	=> undef,
+		'message'	=> $message || undef,
 		'readonly'	=> 1,
 	};
 
@@ -99,6 +99,7 @@ sub create {
 
 The following accessor methods are available:
 
+  SenderName
   To  
   Cc  
   Bcc  
@@ -117,9 +118,47 @@ sub AUTOLOAD {
 	$name =~ s/^.*:://;
 	die "Unknown sub $AUTOLOAD\n"	unless($autosubs{$name});
 	
-	*$name = sub {	return $_[0]->{$name} if $_[0]->{readonly};
-					@_==2 ? $_[0]->{$name} = $_[1] : $_[0]->{$name};	};
+	*$name = sub {	
+        my ($self,$value) = @_;
+
+        if($self->{readonly}) {     # existing message
+            local $^W = 0;
+            return $self->{message}->{$name}   if($self->_ole_exists($name));
+            return undef;
+        }
+
+        @_==2 ? $self->{$name} = $value : $self->{$name};
+    };
 	goto &$name;
+}
+
+sub _ole_exists {
+    my ($self,$name) = @_;
+    local $^W = 0;
+    my $stat = eval { my $value = $self->{message}->{$name} };
+    ($stat || $@) ? 0 : 1;
+}
+
+
+=item From()
+
+Returns the current settings for the read only From field. Note that this is 
+not an email address when used in connection with a new message. Returns a 
+list containing the Name and Address of the user.
+
+=cut
+
+sub From {
+	my ($self) = @_;
+
+	if($self->{readonly}) {	# existing message
+		return	$self->{message}->SenderName();
+
+	} else {				# new message
+		my $user = $self->{message}->UserProperties;
+		return	$user->{'Session'}->{'CurrentUser'}->{'Name'}, 
+				$user->{'Session'}->{'CurrentUser'}->{'Address'};
+	}
 }
 
 =item XHeader($xheader,$value)
@@ -154,27 +193,6 @@ sub XHeader {
 #			$value,
 #			1);
 #	$self->{XHeaders}->{$xheader} = $value;
-}
-
-=item From()
-
-Returns the current settings for the read only From field. Note that this is 
-not an email address when used in connection with a new message. Returns a 
-list containing the Name and Address of the user.
-
-=cut
-
-sub From {
-	my ($self) = @_;
-
-	if($self->{readonly}) {	# existing message
-		return	$self->{message}->SenderName();
-
-	} else {				# new message
-		my $user = $self->{message}->UserProperties;
-		return	$user->{'Session'}->{'CurrentUser'}->{'Name'}, 
-				$user->{'Session'}->{'CurrentUser'}->{'Address'};
-	}
 }
 
 =item display()

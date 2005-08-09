@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 #----------------------------------------------------------------------------
 
@@ -120,7 +120,8 @@ Gets the first message object in the current folder. Returns undef if no message
 
 sub first {
 	my $self = shift;
-	return $self->{items}->GetFirst();
+	my $message = $self->{items}->GetFirst();
+    Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
 =item last()
@@ -131,7 +132,8 @@ Gets the last message object in the current folder. Returns undef if no messages
 
 sub last {
 	my $self = shift;
-	return $self->{items}->GetLast();
+	my $message = $self->{items}->GetLast();
+    Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
 =item next()
@@ -143,7 +145,8 @@ messages. Must be called after a first() or last() has been intiated.
 
 sub next {
 	my $self = shift;
-	return $self->{items}->GetNext();
+	my $message = $self->{items}->GetNext();
+    Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
 =item previous()
@@ -155,7 +158,8 @@ more messages. Must be called after a first() or last() has been intiated.
 
 sub previous {
 	my $self = shift;
-	return $self->{items}->GetPrevious();
+	my $message = $self->{items}->GetPrevious();
+    Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
 1;
