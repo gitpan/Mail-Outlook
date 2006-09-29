@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 #----------------------------------------------------------------------------
 
@@ -41,6 +41,8 @@ my %foldernames = (
 	'Inbox'			=> olFolderInbox,
 	'Outbox'		=> olFolderOutbox,
 	'Sent Items'	=> olFolderSentMail,
+	'Drafts'		=> olFolderDrafts,
+	'Deleted Items'	=> olFolderDeletedItems,
 );
 
 #----------------------------------------------------------------------------
@@ -62,36 +64,39 @@ failure. To see the last error use 'Win32::OLE->LastError();'.
 
 sub new {
 	my ($self, $outlook, $foldername) = @_;
-	my ($mailbox,$folder);
+	my ($mailbox,$folder,$path);
 
-	# mailbox and path
-	if ($foldername =~ m!/!) {
-		my ($box,$name) = ($foldername =~ m!(.*?)/(.*)!);
-		if($foldernames{$box}) {
-			$mailbox = $outlook->{namespace}->GetDefaultFolder($foldernames{$box})
-				or return undef;
-			$folder = $mailbox->Folders($name)
-				or return undef;
-		} else {
-			return undef;
-		}
+	# split mailbox and path
+	($foldername,$path) = ($foldername =~ m!(.*?)/(.*)!)
+		if ($foldername =~ m!/!);
 
-	# mailbox only
-	} elsif($foldernames{$foldername}) {
-		$mailbox = $outlook->{namespace}->GetDefaultFolder($foldernames{$foldername})
-			or return undef;
+	# mailbox name
+	if($foldernames{$foldername}) {
+		eval { $mailbox = $outlook->{namespace}->GetDefaultFolder($foldernames{$foldername}) };
+		return undef	if($@);
 
 	# mailbox constant only
-	} elsif(defined $foldername) {
-		$mailbox = $outlook->{namespace}->GetDefaultFolder($foldername)
-			or return undef;
-		$foldername = 'Not Known';
-		
+	} elsif($foldername =~ /^\d+$/) {
+		eval { $mailbox = $outlook->{namespace}->GetDefaultFolder($foldername) };
+		return undef	if($@);
+
 	# well if you don't know, neither do i!!!
 	} else {
 		return undef;
 	}
+	
+	if($path) {
+		# This is a bit of a hack to stop the OLE complaining when the path
+		# doesn't exist in the folder tree
+		my $hash;
+		eval { $hash = $mailbox->Folders(); };
+		my %keys = map {$_ => 1} keys %$hash;
+		return undef	if($@);
+		return undef	unless($keys{$path});
 
+		eval { $folder = $mailbox->Folders($path) };
+		return undef	if($@);
+	}
 
 	# create an attributes hash
 	my $atts = {
@@ -103,7 +108,6 @@ sub new {
 
 	# prime the mail items collection
 	$atts->{items} = $atts->{objfolder}->Items()	or return undef;
-
 
 	# create the object
 	bless $atts, $self;
@@ -160,6 +164,43 @@ sub previous {
 	my $self = shift;
 	my $message = $self->{items}->GetPrevious();
     Mail::Outlook::Message->new($self->{outlook},$message);
+}
+
+=item move($message)
+
+Move a message into this folder.
+
+=cut
+
+sub move {
+	my ($self,$message) = @_;
+
+	$message->Move($self->{objfolder});
+}
+
+=item move_folder($folder)
+
+Move a folder into this folder.
+
+=cut
+
+sub move_folder {
+	my ($self,$folder) = @_;
+
+	$folder->{objfolder}->MoveTo($self->{objfolder});
+}
+
+=item delete_folder()
+
+Remove this folder.
+
+=cut
+
+sub delete_folder {
+	my $self = shift;
+
+	$self->{objfolder}->Delete();
+	$self = undef;
 }
 
 1;

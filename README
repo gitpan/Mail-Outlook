@@ -18,6 +18,8 @@ supported:
   olFolderInbox
   olFolderOutbox
   olFolderSentMail
+  olFolderDrafts
+  olFolderDeletedItems
 
 DEPENDENCIES
 
@@ -30,6 +32,14 @@ For testing purposes, the following modules are desireable, but not essential:
 
   Test::Pod
   Test::Pod::Coverage
+
+DISCLAIMER
+
+Please note that there are no tests for the display, send, move or delete
+methods, due to the potential havoc they could cause. You are advised to 
+test this functionality safely should you need it. Any damage to your mail
+environment is your sole responsibility. The software herein is provided as
+is and the author accepts no liability as to its reliability.
 
 INSTALLATION
 
@@ -61,7 +71,7 @@ for Miss Barbell Productions, http://www.missbarbell.co.uk
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2003-2005 Barbie & Miss Barbell Productions.
+Copyright (C) 2003-2006 Barbie & Miss Barbell Productions.
 All Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it 

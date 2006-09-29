@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 #----------------------------------------------------------------------------
 
@@ -105,6 +105,7 @@ The following accessor methods are available:
   Bcc  
   Subject  
   Body
+  Attach
 
 All functions can be called to return the current value of the associated
 object variable, or be called with a parameter to set a new value for the
@@ -195,6 +196,29 @@ sub XHeader {
 #	$self->{XHeaders}->{$xheader} = $value;
 }
 
+=item Attach(@attachments)
+
+Add attachments when creating a message. Returns the attachments of the message
+if no arguments are passed to the method.
+
+=cut
+
+sub Attach {
+	my $self = shift;
+
+    if($self->{readonly}) {     # existing message
+        local $^W = 0;
+        if($self->_ole_exists('Attachments')) {
+	        $self->{attachment} = $self->{message}->Attachments;
+	        return $self->{attachment};
+		}
+        return undef;
+    }
+
+	push @{$self->{Attach}}, @_	if(@_);
+	return (@{$self->{Attach}});
+}
+
 =item display()
 
 Creates a pre-populated New Message via Outlook. Returns 1 on success, 0 on failure.
@@ -249,10 +273,37 @@ sub send {
 	$self->{message}->{Subject}	= $self->{Subject};
 	$self->{message}->{Body}	= $self->{Body};
 
+    if ($self->{Attach}) {
+        $self->{attachment} = $self->{message}->Attachments;
+#           $self->{attachment}->Add('d:\activeperl5.8\bin\file',4,1);
+#           print "attach is a ", ref $self->{Attach},"\n";
+        if ((ref $self->{Attach}) =~ /ARRAY/i) {
+#                print "found array of attachments\n";
+            foreach my $attachment (@{$self->{Attach}}) {
+                $self->{attachment}->Add($attachment,1,1);
+            }
+        } else { # assumed to be scalar string
+            $self->{attachment}->Add($self->{Attach},1,1);
+        }
+    }
+
 	# Send the email
 	$self->{message}->Send();
 
 	return 1;
+}
+
+=item delete_message()
+
+Remove this message.
+
+=cut
+
+sub delete_message {
+	my $self = shift;
+
+	$self->{message}->Delete();
+	$self = undef;
 }
 
 1;

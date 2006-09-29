@@ -2,15 +2,19 @@ use Test::More tests => 6;
 	
 use lib 't/testlib';
 
+my $tests = 6;
+
+eval {
+
 SKIP: {
 	eval "use Typelibs";
-	skip "Microsoft Outlook doesn't appear to be installed\n", 6	if($@);
+	skip "Microsoft Outlook doesn't appear to be installed\n", $tests	if($@);
 
 	my $vers = Typelibs::ExistsTypeLib('Microsoft Outlook');
-	skip "Microsoft Outlook doesn't appear to be installed\n", 6	unless($vers);
+	skip "Microsoft Outlook doesn't appear to be installed\n", $tests	unless($vers);
 
 	eval "use Mail::Outlook";
-	skip "Unable to make a connection to Microsoft Outlook\n", 6	if($@);
+	skip "Unable to make a connection to Microsoft Outlook\n", $tests	if($@);
 
 	my %hash = (
 		To		=> 'you@example.com',
@@ -29,4 +33,11 @@ SKIP: {
 	is($message->Bcc(),'Us <us@example.com>; anybody@example.com');
 	is($message->Subject(),'Blah Blah Blah');
 	is($message->Body(),'Yadda Yadda Yadda');
+}
+
+};
+
+if($@ =~ /Network problems/) {
+	skip "Microsoft Outlook cannot connect to the server.\n", $tests;
+	exit;
 }

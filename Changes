@@ -1,5 +1,12 @@
 Revision history for Perl module Mail::Outlook.
 
+0.10	29/09/2006
+	- Added handling for attachments (basic patch by Steven Johnson)
+	- Added move message and move folder functionality
+	- Added delete message and delete folder functionality
+	- Added more tests.
+	- Devel::Cover - 63.9%
+
 0.09    09/08/2005
 	- Some items in a mail folder may actually be a MeetingItem or  a
 	  AppointmentItem, which don't contain the same fields as a MailItem.
