@@ -1,17 +1,35 @@
+
+# DO NOT COPY THESE TWO LINES UNLESS YOU UNDERSTAND WHAT THEY DO. 
+# ... AND EVEN THEN DON'T COPY THEM!
+use strict;
+*strict::import = sub { $^H };
+
 use Test::More tests => 3;
+
+my $nomock;
+my $mock;
+
+BEGIN {
+	eval "use Test::MockObject";
+    $nomock = $@;
+
+	$mock = Test::MockObject->new();
+	$mock->fake_module( 'Win32::OLE' );
+	$mock->fake_new( 'Win32::OLE' );
+}
+
+use lib qw(./t/fake);
+use Win32::OLE::Const   'Microsoft::Outlook';
 
 SKIP: {
 	my $tests = 3;
 
-	eval "use Test::MockObject";
-	skip "Test::MockObject doesn't appear to be installed\n", $tests	if($@);
-
-	my $mock = Test::MockObject->new();
-	$mock->fake_module( 'Win32::OLE' );
+	skip "Test::MockObject doesn't appear to be installed\n", $tests	if($nomock);
 
 	eval "use Mail::Outlook";
-	skip "Unable to make a connection to Microsoft Outlook\n",$tests	if($@);
+	skip "Unable to make a fake connection to Microsoft Outlook: $@\n",$tests	if($@);
 
+	$mock->mock( 'GetNameSpace', sub { return undef } );
 	$mock->mock( 'GetActiveObject', sub { die "Forced Failure" } );
 	my $outlook = Mail::Outlook->new();
 	is($outlook,undef);
@@ -20,7 +38,6 @@ SKIP: {
 	$outlook = Mail::Outlook->new();
 	is($outlook,undef);
 
-	$mock->mock( 'GetNameSpace', sub { return undef } );
 	$outlook = Mail::Outlook->new();
 	is($outlook,undef);
 }

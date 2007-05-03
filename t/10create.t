@@ -1,3 +1,4 @@
+use Cwd;
 use Test::More tests => 8;
 
 use lib 't/testlib';
@@ -44,9 +45,10 @@ SKIP: {
 	is($message->Subject(),'Blah Blah Blah');
 	is($message->Body(),'Yadda Yadda Yadda');
 
-	$message->Attach('MANIFEST');
+    my $cwd = getcwd;
+	$message->Attach("$cwd/MANIFEST");
 	my @attachments = $message->Attach();
-	is_deeply(\@attachments,['MANIFEST']);
+	is_deeply(\@attachments,["$cwd/MANIFEST"]);
 }
 
 };

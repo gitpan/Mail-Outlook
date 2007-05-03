@@ -1,5 +1,22 @@
 Revision history for Perl module Mail::Outlook.
 
+0.11	03/05/2007
+	- Handwritten META.yml to conform to current specs.
+	- Changed all instances of LICENCE to LICENSE.
+	- Added META.yml test script.
+	- Added LICENSE and Artistic files.
+	- POD/README updates
+	- upped the versions required for POD testing
+	- Added 'Win32::OLE->FreeUnusedLibraries()' to the DESTROY method. Some
+	  people were finding that multiple instances of Outlook were being
+	  left open. Suggested by Fritz Zaucker
+	- Hidden Attachment fix implemented thanks to a patch by Fritz Zaucker
+	- Message.pm now requires File::Basename to pass the filename of the 
+	  attachment.
+	- Finally got the failure tests to work with scary magic!
+	- More tests for attachments, displaying messages and sending messages
+	- Devel::Cover - 82.6%
+
 0.10	29/09/2006
 	- Added handling for attachments (basic patch by Steven Johnson)
 	- Added move message and move folder functionality

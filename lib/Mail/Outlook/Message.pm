@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.10';
+$VERSION = '0.11';
 
 #----------------------------------------------------------------------------
 
@@ -28,6 +28,7 @@ Handles the Message interaction with the Outlook API.
 #Library Modules															#
 #############################################################################
 
+use File::Basename;
 use Win32::OLE;
 use Win32::OLE::Const 'Microsoft Outlook';
 
@@ -52,6 +53,18 @@ my %autosubs = map {$_ => 1} @autosubs;
 
 Create a new Outlook mail object. Returns the object on success or undef on
 failure. To see the last error use 'Win32::OLE->LastError();'.
+
+Note that when displaying or sending a message, you MUST have completed the
+following fields:
+
+  To
+  Subject
+  Body
+
+While the RFCs may let you send blank messages, it seems a rather pointless
+idea to me, and probably not what you intended. If you want to ignore this
+restriction, feel free to edit your copy of the source code and comment out 
+the appropriate line in _make_message().
 
 =cut
 
@@ -125,7 +138,7 @@ sub AUTOLOAD {
         if($self->{readonly}) {     # existing message
             local $^W = 0;
             return $self->{message}->{$name}   if($self->_ole_exists($name));
-            return undef;
+            return;
         }
 
         @_==2 ? $self->{$name} = $value : $self->{$name};
@@ -150,10 +163,12 @@ list containing the Name and Address of the user.
 =cut
 
 sub From {
-	my ($self) = @_;
+	my $self = shift;
 
 	if($self->{readonly}) {	# existing message
-		return	$self->{message}->SenderName();
+        my $name;
+        eval {$name = $self->{message}->SenderName()};
+		return $name;   # note this will be undef if we have been declined access
 
 	} else {				# new message
 		my $user = $self->{message}->UserProperties;
@@ -215,8 +230,12 @@ sub Attach {
         return undef;
     }
 
-	push @{$self->{Attach}}, @_	if(@_);
-	return (@{$self->{Attach}});
+    if(@_) {
+    	push @{$self->{Attach}}, {file => $_, name => basename($_), attached => 0}	for(@_);
+    }
+
+
+	return map {$_->{file}} @{$self->{Attach}};
 }
 
 =item display()
@@ -226,24 +245,11 @@ Creates a pre-populated New Message via Outlook. Returns 1 on success, 0 on fail
 =cut
 
 sub display {
-	my ($self,%hash) = @_;
+	my $self = shift;
 
-	# pre-populate the fields, if hash
-	foreach my $field (@autosubs) {
-		$self->{$field} = $hash{$field} if($hash{$field});
-	}
+    return 0    unless($self->_make_message(@_));
 
-	# we need a basic message fields
-	return 0	unless($self->{To} && $self->{Subject} && $self->{Body});
-
-	# Build the message
-	$self->{message}->{To}		= $self->{To};
-	$self->{message}->{Cc}		= $self->{Cc}	if($self->{Cc});
-	$self->{message}->{Bcc}		= $self->{Bcc}	if($self->{Bcc});
-	$self->{message}->{Subject}	= $self->{Subject};
-	$self->{message}->{Body}	= $self->{Body};
-
-	# Send the email
+    # Display the email
 	$self->{message}->Display();
 
 	return 1;
@@ -256,6 +262,23 @@ Sends the message. Returns 1 on success, 0 on failure.
 =cut
 
 sub send {
+	my $self = shift;
+
+    return 0    unless($self->_make_message(@_));
+
+    eval {
+        # Send the email
+        $self->{message}->Send();
+    };
+
+    # check whether user cancelled send or it failed
+    return 2    if($@ =~ /Operation aborted/);
+    return 0    if($@);
+
+	return 1;
+}
+
+sub _make_message {
 	my ($self,%hash) = @_;
 
 	# pre-populate the fields, if hash
@@ -263,7 +286,7 @@ sub send {
 		$self->{$field} = $hash{$field} if($hash{$field});
 	}
 
-	# we need a basic message fields
+	# we need the basic message fields
 	return 0	unless($self->{To} && $self->{Subject} && $self->{Body});
 
 	# Build the message
@@ -275,20 +298,12 @@ sub send {
 
     if ($self->{Attach}) {
         $self->{attachment} = $self->{message}->Attachments;
-#           $self->{attachment}->Add('d:\activeperl5.8\bin\file',4,1);
-#           print "attach is a ", ref $self->{Attach},"\n";
-        if ((ref $self->{Attach}) =~ /ARRAY/i) {
-#                print "found array of attachments\n";
-            foreach my $attachment (@{$self->{Attach}}) {
-                $self->{attachment}->Add($attachment,1,1);
-            }
-        } else { # assumed to be scalar string
-            $self->{attachment}->Add($self->{Attach},1,1);
+        for my $attach (@{$self->{Attach}}) {
+            next    if($attach->{attached});
+            $self->{attachment}->Add($attach->{file},olByValue,10000,$attach->{name});
+            $attach->{attached} = 1;
         }
     }
-
-	# Send the email
-	$self->{message}->Send();
 
 	return 1;
 }
@@ -367,16 +382,11 @@ Click 'Yes' to allow the script to automatically send the message via Outlook.
 
 =back
 
-=head1 BUGS, PATCHES & FIXES
+=head1 FURTHER READING
 
-There are no known bugs at the time of this release. However, if you spot a
-bug or are experiencing difficulties that are not explained within the POD
-documentation, please send an email to barbie@cpan.org or submit a bug to the
-RT system (http://rt.cpan.org/). However, it would help greatly if you are 
-able to pinpoint problems or even supply a patch. 
-
-If you intend to supply a patch, please visit the following URL (and 
-associated pages) to ensure you are using the correct objects and methods.
+If you intend to supply a patch for a bug or new feature, please visit the 
+following URL (and associated pages) to ensure you are using the correct 
+objects and methods.
 
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/off2000/html/olobjApplication.asp
 
@@ -384,9 +394,6 @@ This article contains some interesting background into creating mail
 messages via Outlook, although it is VB-centric.
 
 http://www.exchangeadmin.com/Articles/Index.cfm?ArticleID=4657
-
-Fixes are dependant upon their severity and my availablity. Should a fix not
-be forthcoming, please feel free to (politely) remind me.
 
 =head1 FUTURE ENHANCEMENTS
 
@@ -401,7 +408,7 @@ This module is intended to be used on Win32 platforms only, with Microsoft (R)
 Outlook (R) installed.
 
   Microsoft and Outlook are registered trademarks and the copyright 1995-2003
-  of Microsoft Corporation. All rights reserved.
+  of Microsoft Corporation.
 
 =head1 SEE ALSO
 
@@ -416,17 +423,34 @@ Outlook (R) installed.
   O - Object oriented
   p - Standard-Perl: user may choose between GPL and Artistic
 
+=head1 BUGS, PATCHES & FIXES
+
+There are no known bugs at the time of this release. However, if you spot a
+bug or are experiencing difficulties that are not explained within the POD
+documentation, please submit a bug to the RT system (see link below). However,
+it would help greatly if you are able to pinpoint problems or even supply a 
+patch. 
+
+Fixes are dependant upon their severity and my availablity. Should a fix not
+be forthcoming, please feel free to (politely) remind me by sending an email
+to barbie@cpan.org .
+
+RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
+
 =head1 AUTHOR
 
-Barbie, <barbie@cpan.org>
-for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
+  Barbie, <barbie@cpan.org>
+  for Miss Barbell Productions, <http://www.missbarbell.co.uk>
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2003-2005 Barbie for Miss Barbell Productions
-  All Rights Reserved.
+  Copyright © 2003-2007 Barbie for Miss Barbell Productions.
 
-  This module is free software; you can redistribute it and/or 
-  modify it under the same terms as Perl itself.
+  This library is free software; you can redistribute it and/or modify it under
+  the same terms as Perl itself, using the Artistic License.
+
+The full text of the licenses can be found in the Artistic file included with 
+this distribution, or in perlartistic file as part of Perl installation, in 
+the 5.8.1 release or later.
 
 =cut

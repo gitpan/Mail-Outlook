@@ -69,10 +69,9 @@ AUTHOR
 Barbie <barbie@cpan.org>
 for Miss Barbell Productions, http://www.missbarbell.co.uk
 
-COPYRIGHT AND LICENCE
+COPYRIGHT AND LICENSE
 
 Copyright (C) 2003-2006 Barbie & Miss Barbell Productions.
-All Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it 
 under the same terms as Perl itself.

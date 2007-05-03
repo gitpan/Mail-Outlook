@@ -22,7 +22,10 @@ SKIP: {
 
 	my $message = $folder->first;
 	isa_ok($message,'Mail::Outlook::Message');
-	ok($message->From());
+
+    my $name = $message->From();
+    skip "Access to Microsoft Outlook has been declined", ($tests - 2)  unless($name);
+	ok($name);
 
 	$message = $folder->next;
 	isa_ok($message,'Mail::Outlook::Message');
@@ -37,9 +40,9 @@ SKIP: {
 	isa_ok($message,'Mail::Outlook::Message');
 	ok($message->From());
 
-	$folder = $outlook->folder('Inbox/Test');
+	$folder = $outlook->folder('Inbox/ANameThatShouldNotExist');
 	is($folder,undef);
-	$folder = $outlook->folder('Test');
+	$folder = $outlook->folder('ANameThatShouldNotExist');
 	is($folder,undef);
 
 	eval { use Win32::OLE::Const 'Microsoft Outlook'; };

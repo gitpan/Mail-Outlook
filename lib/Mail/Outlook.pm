@@ -1,10 +1,10 @@
 package Mail::Outlook;
 
 use warnings;
-use strict;
+#use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.10';
+$VERSION = '0.11';
 
 #----------------------------------------------------------------------------
 
@@ -153,7 +153,9 @@ sub new {
 	return $atts;
 }
 
-sub DESTROY {}
+sub DESTROY {
+    Win32::OLE->FreeUnusedLibraries();
+}
 
 =head2 folder()
 
@@ -188,16 +190,11 @@ __END__
 
 #----------------------------------------------------------------------------
 
-=head1 BUGS, PATCHES & FIXES
+=head1 FURTHER READING
 
-There are no known bugs at the time of this release. However, if you spot a
-bug or are experiencing difficulties that are not explained within the POD
-documentation, please send an email to barbie@cpan.org or submit a bug to the
-RT system (http://rt.cpan.org/). However, it would help greatly if you are 
-able to pinpoint problems or even supply a patch. 
-
-If you intend to supply a patch, please visit the following URL (and 
-associated pages) to ensure you are using the correct objects and methods.
+If you intend to supply a patch for a bug or new feature, please visit the 
+following URL (and associated pages) to ensure you are using the correct 
+objects and methods.
 
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/off2000/html/olobjApplication.asp
 
@@ -205,9 +202,6 @@ This article contains some interesting background into creating mail
 messages via Outlook, although it is VB-centric.
 
 http://www.exchangeadmin.com/Articles/Index.cfm?ArticleID=4657
-
-Fixes are dependant upon their severity and my availablity. Should a fix not
-be forthcoming, please feel free to (politely) remind me.
 
 =head1 FUTURE ENHANCEMENTS
 
@@ -222,7 +216,7 @@ This module is intended to be used on Win32 platforms only, with Microsoft (R)
 Outlook (R) installed.
 
   Microsoft and Outlook are registered trademarks and the copyright 1995-2003
-  of Microsoft Corporation. All rights reserved.
+  of Microsoft Corporation.
 
 =head1 SEE ALSO
 
@@ -237,17 +231,34 @@ Outlook (R) installed.
   O - Object oriented
   p - Standard-Perl: user may choose between GPL and Artistic
 
+=head1 BUGS, PATCHES & FIXES
+
+There are no known bugs at the time of this release. However, if you spot a
+bug or are experiencing difficulties that are not explained within the POD
+documentation, please submit a bug to the RT system (see link below). However,
+it would help greatly if you are able to pinpoint problems or even supply a 
+patch. 
+
+Fixes are dependant upon their severity and my availablity. Should a fix not
+be forthcoming, please feel free to (politely) remind me by sending an email
+to barbie@cpan.org .
+
+RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
+
 =head1 AUTHOR
 
-Barbie, <barbie@cpan.org>
-for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
+  Barbie, <barbie@cpan.org>
+  for Miss Barbell Productions, <http://www.missbarbell.co.uk>
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2003-2005 Barbie for Miss Barbell Productions
-  All Rights Reserved.
+  Copyright © 2003-2007 Barbie for Miss Barbell Productions.
 
-  This module is free software; you can redistribute it and/or 
-  modify it under the same terms as Perl itself.
+  This library is free software; you can redistribute it and/or modify it under
+  the same terms as Perl itself, using the Artistic License.
+
+The full text of the licenses can be found in the Artistic file included with 
+this distribution, or in perlartistic file as part of Perl installation, in 
+the 5.8.1 release or later.
 
 =cut
