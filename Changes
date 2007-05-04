@@ -1,4 +1,9 @@
-Revision history for Perl module Mail::Outlook.
+Revision history for Perl distribution Mail-Outlook.
+
+0.12	04/05/2007
+	- forgot to put back strict after testing! Ooops :(
+	- missed Cwd from the prequisities too, although it's only required
+	  for testing.
 
 0.11	03/05/2007
 	- Handwritten META.yml to conform to current specs.

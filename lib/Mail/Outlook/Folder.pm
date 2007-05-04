@@ -1,10 +1,10 @@
 package Mail::Outlook::Folder;
 
 use warnings;
-#use strict;
+use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.11';
+$VERSION = '0.12';
 
 #----------------------------------------------------------------------------
 

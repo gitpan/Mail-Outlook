@@ -3,6 +3,7 @@ WriteMakefile(
     'NAME'		    => 'Mail::Outlook',
     'VERSION_FROM'	=> 'lib/Mail/Outlook.pm',
     'PREREQ_PM'		=> {
+        Cwd                 => 0,
         File::Basename      => 0,
 		Win32::OLE          => 0,
 		Win32::OLE::Const   => 0,
