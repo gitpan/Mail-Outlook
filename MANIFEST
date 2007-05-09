@@ -17,6 +17,7 @@ t/11createhash.t
 t/12display.t
 t/13attachments.t
 t/14send.t
+t/15read.t
 t/20folders.t
 t/30failures.t
 t/90podtest.t

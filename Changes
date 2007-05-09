@@ -1,8 +1,19 @@
 Revision history for Perl distribution Mail-Outlook.
 
+0.13	current
+	- Updated POD for attachments and new features.
+	- Added Sent & Received methods to Outlook::Message, that correspond to
+	  the date/time a sent mail was sent and received.
+	- Fixed a long standing bug of why readonly mail wasn't returning any
+	  values for the accessors.
+	- Added tests for read functionality. Note that as all read tests will
+	  read messages in your Inbox, to protect your privacy, you must set
+	  the environment variable PRIVATE_TESTS for them to run.
+	- Devel::Cover - 84.7%
+
 0.12	04/05/2007
-	- forgot to put back strict after testing! Ooops :(
-	- missed Cwd from the prequisities too, although it's only required
+	- Forgot to put back strict after testing! Ooops :(
+	- Missed Cwd from the prequisities too, although it's only required
 	  for testing.
 
 0.11	03/05/2007

@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.12';
+$VERSION = '0.13';
 
 #----------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ following fields:
 While the RFCs may let you send blank messages, it seems a rather pointless
 idea to me, and probably not what you intended. If you want to ignore this
 restriction, feel free to edit your copy of the source code and comment out 
-the appropriate line in _make_message().
+or edit the appropriate line in _make_message().
 
 =cut
 
@@ -105,12 +105,71 @@ sub create {
 	return $self->{message};
 }
 
+=item display()
+
+Creates a pre-populated New Message via Outlook. Returns 1 on success, 0 on failure.
+
+=cut
+
+sub display {
+	my $self = shift;
+
+    return 0    unless($self->_make_message(@_));
+
+    # Display the email
+	$self->{message}->Display();
+
+	return 1;
+}
+
+=item send()
+
+Sends the message. Returns 1 on success, 0 on failure.
+
+=cut
+
+sub send {
+	my $self = shift;
+
+    return 0    unless($self->_make_message(@_));
+
+    eval {
+        # Send the email
+        $self->{message}->Send();
+    };
+
+    # check whether user cancelled send or it failed
+    return 2    if($@ =~ /Operation aborted/);
+    return 0    if($@);
+
+	return 1;
+}
+
+=item delete_message()
+
+Remove this message.
+
+=cut
+
+sub delete_message {
+	my $self = shift;
+
+	$self->{message}->Delete();
+	$self = undef;
+}
+
 # -------------------------------------
 # The Get & Set Methods Interface Subs
 
-=item Accessor Methods
+=back
 
-The following accessor methods are available:
+=head2 Accessor Methods
+
+=over 4
+
+=item Basic Accessor Methods
+
+The following basic accessor methods are available:
 
   SenderName
   To  
@@ -118,11 +177,10 @@ The following accessor methods are available:
   Bcc  
   Subject  
   Body
-  Attach
 
 All functions can be called to return the current value of the associated
 object variable, or be called with a parameter to set a new value for the
-object variable.
+object variable if you are creating a message.
 
 =cut
 
@@ -137,22 +195,13 @@ sub AUTOLOAD {
 
         if($self->{readonly}) {     # existing message
             local $^W = 0;
-            return $self->{message}->{$name}   if($self->_ole_exists($name));
-            return;
+            return $self->{message}->$name();
         }
 
         @_==2 ? $self->{$name} = $value : $self->{$name};
     };
 	goto &$name;
 }
-
-sub _ole_exists {
-    my ($self,$name) = @_;
-    local $^W = 0;
-    my $stat = eval { my $value = $self->{message}->{$name} };
-    ($stat || $@) ? 0 : 1;
-}
-
 
 =item From()
 
@@ -175,6 +224,40 @@ sub From {
 		return	$user->{'Session'}->{'CurrentUser'}->{'Name'}, 
 				$user->{'Session'}->{'CurrentUser'}->{'Address'};
 	}
+}
+
+=item Sent()
+
+Returns the date/time the current message was sent. Note that this will
+return undef if the message has not been sent!
+
+=cut
+
+sub Sent {
+	my $self = shift;
+
+	return  unless($self->{readonly});  # existing messages only!
+
+    my $dt;
+    eval {$dt = $self->{message}->SentOn()->Date() . ' ' . $self->{message}->SentOn()->Time()};
+    return $dt;   # note this will be undef if we have been declined access
+}
+
+=item Received()
+
+Returns the date/time the current message was received. Note that this will
+return undef if the message has not been sent!
+
+=cut
+
+sub Received {
+	my $self = shift;
+
+	return  unless($self->{readonly});  # existing messages only!
+
+    my $dt;
+    eval {$dt = $self->{message}->ReceivedTime()->Date() . ' ' . $self->{message}->ReceivedTime()->Time()};
+    return $dt;   # note this will be undef if we have been declined access
 }
 
 =item XHeader($xheader,$value)
@@ -238,44 +321,14 @@ sub Attach {
 	return map {$_->{file}} @{$self->{Attach}};
 }
 
-=item display()
+# -------------------------------------
+# Internal Subs
 
-Creates a pre-populated New Message via Outlook. Returns 1 on success, 0 on failure.
-
-=cut
-
-sub display {
-	my $self = shift;
-
-    return 0    unless($self->_make_message(@_));
-
-    # Display the email
-	$self->{message}->Display();
-
-	return 1;
-}
-
-=item send()
-
-Sends the message. Returns 1 on success, 0 on failure.
-
-=cut
-
-sub send {
-	my $self = shift;
-
-    return 0    unless($self->_make_message(@_));
-
-    eval {
-        # Send the email
-        $self->{message}->Send();
-    };
-
-    # check whether user cancelled send or it failed
-    return 2    if($@ =~ /Operation aborted/);
-    return 0    if($@);
-
-	return 1;
+sub _ole_exists {
+    my ($self,$name) = @_;
+    local $^W = 0;
+    my $stat = eval { my $value = $self->{message}->{$name} };
+    ($stat || $@) ? 0 : 1;
 }
 
 sub _make_message {
@@ -308,19 +361,6 @@ sub _make_message {
 	return 1;
 }
 
-=item delete_message()
-
-Remove this message.
-
-=cut
-
-sub delete_message {
-	my $self = shift;
-
-	$self->{message}->Delete();
-	$self = undef;
-}
-
 1;
 
 __END__
@@ -336,7 +376,7 @@ the automatic access to the Outlook OLE. As some spam and trojan scripts, as
 well as the usual executables, have been using the application for malicious
 uses, Microsoft have stepped in an attempt to block this. If these security
 patches have been applied, when the module accesses Outlook via the OLE, you
-may see at least one of the following messages.
+will probably see one of the following messages, or something like them.
 
 =over 4
 
@@ -357,9 +397,9 @@ may appear. The text will be along the lines of:
   [Yes]  [No]  [Help]
 
 
-The message informs you an unknown application is accessing Outlook and asks
-whether you wish to allow this. Click 'Yes' to allow the script to access the
-Outlook Address Book. Or you can set a time period, during which the script 
+The message informs you that an unknown application is accessing Outlook and 
+asks whether you wish to allow this. Click 'Yes' to allow the script to access 
+the Outlook Address Book. Or you can set a time period, during which the script 
 can access the Outlook OLE.
 
 =item Security Message 2

@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.12';
+$VERSION = '0.13';
 
 #----------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ Handles the Folder interaction with the Outlook API.
 #----------------------------------------------------------------------------
 
 #############################################################################
-#Library Modules															#
+#Library Modules                                                            #
 #############################################################################
 
 use Win32::OLE;
@@ -38,17 +38,17 @@ use Mail::Outlook::Message;
 #############################################################################
 
 my %foldernames = (
-	'Inbox'			=> olFolderInbox,
-	'Outbox'		=> olFolderOutbox,
-	'Sent Items'	=> olFolderSentMail,
-	'Drafts'		=> olFolderDrafts,
-	'Deleted Items'	=> olFolderDeletedItems,
+    'Inbox'         => olFolderInbox,
+    'Outbox'        => olFolderOutbox,
+    'Sent Items'    => olFolderSentMail,
+    'Drafts'        => olFolderDrafts,
+    'Deleted Items' => olFolderDeletedItems,
 );
 
 #----------------------------------------------------------------------------
 
 #############################################################################
-#Interface Functions														#
+#Interface Functions                                                        #
 #############################################################################
 
 =head1 METHODS
@@ -63,55 +63,55 @@ failure. To see the last error use 'Win32::OLE->LastError();'.
 =cut
 
 sub new {
-	my ($self, $outlook, $foldername) = @_;
-	my ($mailbox,$folder,$path);
+    my ($self, $outlook, $foldername) = @_;
+    my ($mailbox,$folder,$path);
 
-	# split mailbox and path
-	($foldername,$path) = ($foldername =~ m!(.*?)/(.*)!)
-		if ($foldername =~ m!/!);
+    # split mailbox and path
+    ($foldername,$path) = ($foldername =~ m!(.*?)/(.*)!)
+        if ($foldername =~ m!/!);
 
-	# mailbox name
-	if($foldernames{$foldername}) {
-		eval { $mailbox = $outlook->{namespace}->GetDefaultFolder($foldernames{$foldername}) };
-		return undef	if($@);
+    # mailbox name
+    if($foldernames{$foldername}) {
+        eval { $mailbox = $outlook->{namespace}->GetDefaultFolder($foldernames{$foldername}) };
+        return undef    if($@);
 
-	# mailbox constant only
-	} elsif($foldername =~ /^\d+$/) {
-		eval { $mailbox = $outlook->{namespace}->GetDefaultFolder($foldername) };
-		return undef	if($@);
+    # mailbox constant only
+    } elsif($foldername =~ /^\d+$/) {
+        eval { $mailbox = $outlook->{namespace}->GetDefaultFolder($foldername) };
+        return undef    if($@);
 
-	# well if you don't know, neither do i!!!
-	} else {
-		return undef;
-	}
-	
-	if($path) {
-		# This is a bit of a hack to stop the OLE complaining when the path
-		# doesn't exist in the folder tree
-		my $hash;
-		eval { $hash = $mailbox->Folders(); };
-		my %keys = map {$_ => 1} keys %$hash;
-		return undef	if($@);
-		return undef	unless($keys{$path});
+    # well if you don't know, neither do i!!!
+    } else {
+        return undef;
+    }
+    
+    if($path) {
+        # This is a bit of a hack to stop the OLE complaining when the path
+        # doesn't exist in the folder tree
+        my $hash;
+        eval { $hash = $mailbox->Folders(); };
+        my %keys = map {$_ => 1} keys %$hash;
+        return undef    if($@);
+        return undef    unless($keys{$path});
 
-		eval { $folder = $mailbox->Folders($path) };
-		return undef	if($@);
-	}
+        eval { $folder = $mailbox->Folders($path) };
+        return undef    if($@);
+    }
 
-	# create an attributes hash
-	my $atts = {
-		'outlook'		=> $outlook,
-		'foldername'	=> $foldername,
-		'objfolder'		=> $folder || $mailbox || undef,
-		'items'			=> undef,
-	};
+    # create an attributes hash
+    my $atts = {
+        'outlook'       => $outlook,
+        'foldername'    => $foldername,
+        'objfolder'     => $folder || $mailbox || undef,
+        'items'         => undef,
+    };
 
-	# prime the mail items collection
-	$atts->{items} = $atts->{objfolder}->Items()	or return undef;
+    # prime the mail items collection
+    $atts->{items} = $atts->{objfolder}->Items()    or return undef;
 
-	# create the object
-	bless $atts, $self;
-	return $atts;
+    # create the object
+    bless $atts, $self;
+    return $atts;
 }
 
 sub DESTROY {}
@@ -123,8 +123,9 @@ Gets the first message object in the current folder. Returns undef if no message
 =cut
 
 sub first {
-	my $self = shift;
-	my $message = $self->{items}->GetFirst();
+    my $self = shift;
+    my $message = $self->{items}->GetFirst();
+    return  unless($message);
     Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
@@ -135,8 +136,9 @@ Gets the last message object in the current folder. Returns undef if no messages
 =cut
 
 sub last {
-	my $self = shift;
-	my $message = $self->{items}->GetLast();
+    my $self = shift;
+    my $message = $self->{items}->GetLast();
+    return  unless($message);
     Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
@@ -148,8 +150,9 @@ messages. Must be called after a first() or last() has been intiated.
 =cut
 
 sub next {
-	my $self = shift;
-	my $message = $self->{items}->GetNext();
+    my $self = shift;
+    my $message = $self->{items}->GetNext();
+    return  unless($message);
     Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
@@ -161,8 +164,9 @@ more messages. Must be called after a first() or last() has been intiated.
 =cut
 
 sub previous {
-	my $self = shift;
-	my $message = $self->{items}->GetPrevious();
+    my $self = shift;
+    my $message = $self->{items}->GetPrevious();
+    return  unless($message);
     Mail::Outlook::Message->new($self->{outlook},$message);
 }
 
@@ -173,9 +177,9 @@ Move a message into this folder.
 =cut
 
 sub move {
-	my ($self,$message) = @_;
+    my ($self,$message) = @_;
 
-	$message->Move($self->{objfolder});
+    $message->Move($self->{objfolder});
 }
 
 =item move_folder($folder)
@@ -185,9 +189,9 @@ Move a folder into this folder.
 =cut
 
 sub move_folder {
-	my ($self,$folder) = @_;
+    my ($self,$folder) = @_;
 
-	$folder->{objfolder}->MoveTo($self->{objfolder});
+    $folder->{objfolder}->MoveTo($self->{objfolder});
 }
 
 =item delete_folder()
@@ -197,10 +201,10 @@ Remove this folder.
 =cut
 
 sub delete_folder {
-	my $self = shift;
+    my $self = shift;
 
-	$self->{objfolder}->Delete();
-	$self = undef;
+    $self->{objfolder}->Delete();
+    $self = undef;
 }
 
 1;

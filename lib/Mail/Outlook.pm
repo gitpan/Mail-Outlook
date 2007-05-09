@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.12';
+$VERSION = '0.13';
 
 #----------------------------------------------------------------------------
 
@@ -43,6 +43,7 @@ Mail::Outlook - mail module to interface with Microsoft (R) Outlook (R).
      $text = $message->Bcc();
      $text = $message->Subject();
      $text = $message->Body();
+  my @list = $message->Attach();
 
   # use Outlook to display the current message
   $message->display;
@@ -54,6 +55,9 @@ Mail::Outlook - mail module to interface with Microsoft (R) Outlook (R).
   $message->Bcc('Us <us@example.com>; anybody@example.com');
   $message->Subject('Blah Blah Blah');
   $message->Body('Yadda Yadda Yadda');
+  $message->Attach(@lots_of_files);
+  $message->Attach(@more_files);    # attachments are appended
+  $message->Attach($one_file);      # so multiple calls are allowed
   $message->send;
 
   # Or use a hash
@@ -80,12 +84,13 @@ Note that when sending messages, the module uses the named owner of the
 Outbox MAPI Folder in order to access the correct objects. Thus the From 
 field of a new message is predetermined, and therefore a read only property.
 
-If using the 'Win32::OLE::Const' constants, only the following are currently 
-supported:
+If using the 'Win32::OLE::Const' constants, only the following are supported:
 
   olFolderInbox
   olFolderOutbox
   olFolderSentMail
+  olFolderDrafts
+  olFolderDeletedItems
 
 =head1 ABSTRACT
 
@@ -147,7 +152,7 @@ sub new {
 	# create the object
 	bless $atts, $self;
 
-	# create a folder if required
+    # create a folder if required
 	$atts->{objfolder} = $atts->folder($foldername)	if($foldername);
 
 	return $atts;
