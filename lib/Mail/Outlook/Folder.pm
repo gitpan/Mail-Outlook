@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.13';
+$VERSION = '0.14';
 
 #----------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ sub new {
     } else {
         return undef;
     }
-    
+
     if($path) {
         # This is a bit of a hack to stop the OLE complaining when the path
         # doesn't exist in the folder tree
@@ -144,7 +144,7 @@ sub last {
 
 =item next()
 
-Gets the next message object in the current folder. Returns undef if no more 
+Gets the next message object in the current folder. Returns undef if no more
 messages. Must be called after a first() or last() has been intiated.
 
 =cut
@@ -158,7 +158,7 @@ sub next {
 
 =item previous()
 
-Gets the previous message object in the current folder. Returns undef if no 
+Gets the previous message object in the current folder. Returns undef if no
 more messages. Must be called after a first() or last() has been intiated.
 
 =cut
@@ -217,8 +217,8 @@ __END__
 
 =head1 FURTHER READING
 
-If you intend to supply a patch for a bug or new feature, please visit the 
-following URL (and associated pages) to ensure you are using the correct 
+If you intend to supply a patch for a bug or new feature, please visit the
+following URL (and associated pages) to ensure you are using the correct
 objects and methods.
 
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/off2000/html/olobjApplication.asp
@@ -237,7 +237,7 @@ A couple of items that I'd like to get working.
 
 =head1 NOTES
 
-This module is intended to be used on Win32 platforms only, with Microsoft (R) 
+This module is intended to be used on Win32 platforms only, with Microsoft (R)
 Outlook (R) installed.
 
   Microsoft and Outlook are registered trademarks and the copyright 1995-2003
@@ -261,8 +261,8 @@ Outlook (R) installed.
 There are no known bugs at the time of this release. However, if you spot a
 bug or are experiencing difficulties that are not explained within the POD
 documentation, please submit a bug to the RT system (see link below). However,
-it would help greatly if you are able to pinpoint problems or even supply a 
-patch. 
+it would help greatly if you are able to pinpoint problems or even supply a
+patch.
 
 Fixes are dependant upon their severity and my availablity. Should a fix not
 be forthcoming, please feel free to (politely) remind me by sending an email
@@ -282,8 +282,8 @@ RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
   This library is free software; you can redistribute it and/or modify it under
   the same terms as Perl itself, using the Artistic License.
 
-The full text of the licenses can be found in the Artistic file included with 
-this distribution, or in perlartistic file as part of Perl installation, in 
+The full text of the licenses can be found in the Artistic file included with
+this distribution, or in perlartistic file as part of Perl installation, in
 the 5.8.1 release or later.
 
 =cut

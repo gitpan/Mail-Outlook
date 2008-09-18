@@ -1,5 +1,5 @@
 use Test::More tests => 37;
-	
+
 use lib 't/testlib';
 
 my $tests = 37;
@@ -18,7 +18,8 @@ SKIP: {
 	eval "use Mail::Outlook";
 	skip "Unable to make a connection to Microsoft Outlook\n", $tests	if($@);
 
-	use Win32::OLE::Const 'Microsoft Outlook';
+	eval "use Win32::OLE::Const 'Microsoft Outlook'";
+	skip "Unable to make a connection to Microsoft Outlook\n", $tests	if($@);
 
     {
     	my $outlook = Mail::Outlook->new();

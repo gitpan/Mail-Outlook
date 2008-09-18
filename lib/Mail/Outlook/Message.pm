@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.13';
+$VERSION = '0.14';
 
 #----------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ following fields:
 
 While the RFCs may let you send blank messages, it seems a rather pointless
 idea to me, and probably not what you intended. If you want to ignore this
-restriction, feel free to edit your copy of the source code and comment out 
+restriction, feel free to edit your copy of the source code and comment out
 or edit the appropriate line in _make_message().
 
 =cut
@@ -172,10 +172,10 @@ sub delete_message {
 The following basic accessor methods are available:
 
   SenderName
-  To  
-  Cc  
-  Bcc  
-  Subject  
+  To
+  Cc
+  Bcc
+  Subject
   Body
 
 All functions can be called to return the current value of the associated
@@ -189,8 +189,8 @@ sub AUTOLOAD {
 	my $name = $AUTOLOAD;
 	$name =~ s/^.*:://;
 	die "Unknown sub $AUTOLOAD\n"	unless($autosubs{$name});
-	
-	*$name = sub {	
+
+	*$name = sub {
         my ($self,$value) = @_;
 
         if($self->{readonly}) {     # existing message
@@ -205,8 +205,8 @@ sub AUTOLOAD {
 
 =item From()
 
-Returns the current settings for the read only From field. Note that this is 
-not an email address when used in connection with a new message. Returns a 
+Returns the current settings for the read only From field. Note that this is
+not an email address when used in connection with a new message. Returns a
 list containing the Name and Address of the user.
 
 =cut
@@ -221,7 +221,7 @@ sub From {
 
 	} else {				# new message
 		my $user = $self->{message}->UserProperties;
-		return	$user->{'Session'}->{'CurrentUser'}->{'Name'}, 
+		return	$user->{'Session'}->{'CurrentUser'}->{'Name'},
 				$user->{'Session'}->{'CurrentUser'}->{'Address'};
 	}
 }
@@ -262,7 +262,7 @@ sub Received {
 
 =item XHeader($xheader,$value)
 
-Adds a header in the style of 'X-Header' to the headers of the message. 
+Adds a header in the style of 'X-Header' to the headers of the message.
 Returns undef if header cannot be added.
 
 NOTE: Currently unimplemented, due to unreliable treatment by Exchange server.
@@ -277,7 +277,7 @@ sub XHeader {
 
 #	my $header = $1;
 
-	# "That GUID (funky number between the curly braces) is the correct one 
+	# "That GUID (funky number between the curly braces) is the correct one
 	# for generating X-Headers." - Thomas J. Zamberlan on a Yahoo tech group
 
 #	my $user = $self->{msg}->UserProperties;
@@ -386,10 +386,10 @@ When the module attempts to retrieve the From address, a warning message box
 may appear. The text will be along the lines of:
 
 
-  A program is trying to access e-mail addresses you have 
+  A program is trying to access e-mail addresses you have
   stored in Outlook. Do you want to allow this?
 
-  If this is unexpected, it may be a virus and you should 
+  If this is unexpected, it may be a virus and you should
   choose "No".
 
   [ ] Allow access for [ --------- V]
@@ -397,9 +397,9 @@ may appear. The text will be along the lines of:
   [Yes]  [No]  [Help]
 
 
-The message informs you that an unknown application is accessing Outlook and 
-asks whether you wish to allow this. Click 'Yes' to allow the script to access 
-the Outlook Address Book. Or you can set a time period, during which the script 
+The message informs you that an unknown application is accessing Outlook and
+asks whether you wish to allow this. Click 'Yes' to allow the script to access
+the Outlook Address Book. Or you can set a time period, during which the script
 can access the Outlook OLE.
 
 =item Security Message 2
@@ -408,11 +408,11 @@ On sending the message, you may also activate another warning message box.
 The text will be along the lines of:
 
 
-  A program is trying to automatically send e-mail on 
+  A program is trying to automatically send e-mail on
   your behalf.
   Do you want to allow this?
 
-  If this is unexpected, it may be a virus and you should 
+  If this is unexpected, it may be a virus and you should
   choose "No".
 
   [Yes]  [No]  [Help]
@@ -424,8 +424,8 @@ Click 'Yes' to allow the script to automatically send the message via Outlook.
 
 =head1 FURTHER READING
 
-If you intend to supply a patch for a bug or new feature, please visit the 
-following URL (and associated pages) to ensure you are using the correct 
+If you intend to supply a patch for a bug or new feature, please visit the
+following URL (and associated pages) to ensure you are using the correct
 objects and methods.
 
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/off2000/html/olobjApplication.asp
@@ -444,7 +444,7 @@ A couple of items that I'd like to get working.
 
 =head1 NOTES
 
-This module is intended to be used on Win32 platforms only, with Microsoft (R) 
+This module is intended to be used on Win32 platforms only, with Microsoft (R)
 Outlook (R) installed.
 
   Microsoft and Outlook are registered trademarks and the copyright 1995-2003
@@ -468,8 +468,8 @@ Outlook (R) installed.
 There are no known bugs at the time of this release. However, if you spot a
 bug or are experiencing difficulties that are not explained within the POD
 documentation, please submit a bug to the RT system (see link below). However,
-it would help greatly if you are able to pinpoint problems or even supply a 
-patch. 
+it would help greatly if you are able to pinpoint problems or even supply a
+patch.
 
 Fixes are dependant upon their severity and my availablity. Should a fix not
 be forthcoming, please feel free to (politely) remind me by sending an email
@@ -489,8 +489,8 @@ RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
   This library is free software; you can redistribute it and/or modify it under
   the same terms as Perl itself, using the Artistic License.
 
-The full text of the licenses can be found in the Artistic file included with 
-this distribution, or in perlartistic file as part of Perl installation, in 
+The full text of the licenses can be found in the Artistic file included with
+this distribution, or in perlartistic file as part of Perl installation, in
 the 5.8.1 release or later.
 
 =cut

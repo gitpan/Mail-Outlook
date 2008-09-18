@@ -1,6 +1,12 @@
 Revision history for Perl distribution Mail-Outlook.
 
-0.13	current
+0.14	18/09/2008
+	- add all_folders patch (RT#27531). Thanks to Jerome Quelin.
+	- fixed 30failures.t to skip properly if Test::MockObject is not 
+	  installed (RT#34193).
+	- Apologies to all for taking so long to get this version released :(
+
+0.13	09/05/2007
 	- Updated POD for attachments and new features.
 	- Added Sent & Received methods to Outlook::Message, that correspond to
 	  the date/time a sent mail was sent and received.

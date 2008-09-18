@@ -1,5 +1,5 @@
 
-# DO NOT COPY THESE TWO LINES UNLESS YOU UNDERSTAND WHAT THEY DO. 
+# DO NOT COPY THESE TWO LINES UNLESS YOU UNDERSTAND WHAT THEY DO.
 # ... AND EVEN THEN DON'T COPY THEM!
 use strict;
 *strict::import = sub { $^H };
@@ -13,13 +13,14 @@ BEGIN {
 	eval "use Test::MockObject";
     $nomock = $@;
 
-	$mock = Test::MockObject->new();
-	$mock->fake_module( 'Win32::OLE' );
-	$mock->fake_new( 'Win32::OLE' );
+    unless($nomock) {
+        $mock = Test::MockObject->new();
+        $mock->fake_module( 'Win32::OLE' );
+        $mock->fake_new( 'Win32::OLE' );
+    }
 }
 
 use lib qw(./t/fake);
-use Win32::OLE::Const   'Microsoft::Outlook';
 
 SKIP: {
 	my $tests = 3;
@@ -29,7 +30,9 @@ SKIP: {
 	eval "use Mail::Outlook";
 	skip "Unable to make a fake connection to Microsoft Outlook: $@\n",$tests	if($@);
 
-	$mock->mock( 'GetNameSpace', sub { return undef } );
+    use Win32::OLE::Const   'Microsoft::Outlook';
+
+    $mock->mock( 'GetNameSpace', sub { return undef } );
 	$mock->mock( 'GetActiveObject', sub { die "Forced Failure" } );
 	my $outlook = Mail::Outlook->new();
 	is($outlook,undef);

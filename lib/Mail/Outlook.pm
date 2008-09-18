@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.13';
+$VERSION = '0.14';
 
 #----------------------------------------------------------------------------
 
@@ -75,13 +75,13 @@ Mail::Outlook - mail module to interface with Microsoft (R) Outlook (R).
 
 =head1 DESCRIPTION
 
-This module was written to overcome the problem of sending mail messages, 
+This module was written to overcome the problem of sending mail messages,
 where Microsoft (R) Outlook (R) is the only mail application available.
-However, since it's inception the module has expanded to handle a range of 
+However, since it's inception the module has expanded to handle a range of
 Outlook mail functionality.
 
-Note that when sending messages, the module uses the named owner of the 
-Outbox MAPI Folder in order to access the correct objects. Thus the From 
+Note that when sending messages, the module uses the named owner of the
+Outbox MAPI Folder in order to access the correct objects. Thus the From
 field of a new message is predetermined, and therefore a read only property.
 
 If using the 'Win32::OLE::Const' constants, only the following are supported:
@@ -94,7 +94,7 @@ If using the 'Win32::OLE::Const' constants, only the following are supported:
 
 =head1 ABSTRACT
 
-A mail module to interface with mail message accessible via 
+A mail module to interface with mail message accessible via
 Microsoft (R) Outlook (R).
 
 =cut
@@ -162,6 +162,21 @@ sub DESTROY {
     Win32::OLE->FreeUnusedLibraries();
 }
 
+=head2 all_folders()
+
+Get the list of all open mail folders in Outlook
+
+=cut
+
+sub all_folders {
+    my ($self) = @_;
+    my $folders = $self->{namespace}->Folders;
+    my @folders;
+    push @folders, $folders->Item($_)->Name
+        for 1 .. $folders->Count;
+    return @folders;
+}
+
 =head2 folder()
 
 Gets or sets the current folder object.
@@ -176,7 +191,7 @@ sub folder {
 
 =head2 create(%hash)
 
-Creates a new message. Option hash table can be used. Returns the new message 
+Creates a new message. Option hash table can be used. Returns the new message
 object or undef on failure.
 
 =cut
@@ -197,8 +212,8 @@ __END__
 
 =head1 FURTHER READING
 
-If you intend to supply a patch for a bug or new feature, please visit the 
-following URL (and associated pages) to ensure you are using the correct 
+If you intend to supply a patch for a bug or new feature, please visit the
+following URL (and associated pages) to ensure you are using the correct
 objects and methods.
 
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/off2000/html/olobjApplication.asp
@@ -217,7 +232,7 @@ A couple of items that I'd like to get working.
 
 =head1 NOTES
 
-This module is intended to be used on Win32 platforms only, with Microsoft (R) 
+This module is intended to be used on Win32 platforms only, with Microsoft (R)
 Outlook (R) installed.
 
   Microsoft and Outlook are registered trademarks and the copyright 1995-2003
@@ -241,8 +256,8 @@ Outlook (R) installed.
 There are no known bugs at the time of this release. However, if you spot a
 bug or are experiencing difficulties that are not explained within the POD
 documentation, please submit a bug to the RT system (see link below). However,
-it would help greatly if you are able to pinpoint problems or even supply a 
-patch. 
+it would help greatly if you are able to pinpoint problems or even supply a
+patch.
 
 Fixes are dependant upon their severity and my availablity. Should a fix not
 be forthcoming, please feel free to (politely) remind me by sending an email
@@ -262,8 +277,8 @@ RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
   This library is free software; you can redistribute it and/or modify it under
   the same terms as Perl itself, using the Artistic License.
 
-The full text of the licenses can be found in the Artistic file included with 
-this distribution, or in perlartistic file as part of Perl installation, in 
+The full text of the licenses can be found in the Artistic file included with
+this distribution, or in perlartistic file as part of Perl installation, in
 the 5.8.1 release or later.
 
 =cut

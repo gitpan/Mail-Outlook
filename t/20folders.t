@@ -1,5 +1,5 @@
 use Test::More tests => 12;
-	
+
 use lib 't/testlib';
 
 my $tests = 12;
@@ -45,8 +45,9 @@ SKIP: {
 	$folder = $outlook->folder('ANameThatShouldNotExist');
 	is($folder,undef);
 
-	eval { use Win32::OLE::Const 'Microsoft Outlook'; };
-	
+	eval "use Win32::OLE::Const 'Microsoft Outlook'";
+	skip "Unable to make a connection to Microsoft Outlook\n", 1	if($@);
+
 	$folder = $outlook->folder(olFolderInbox);
 	isa_ok($folder,'Mail::Outlook::Folder');
 }

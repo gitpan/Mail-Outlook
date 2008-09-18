@@ -7,6 +7,7 @@ WriteMakefile(
         File::Basename      => 0,
 		Win32::OLE          => 0,
 		Win32::OLE::Const   => 0,
+		Test::More          => 0.70,
 	},
 	NO_META			=> 1,
     ($] >= 5.005 ?
@@ -20,7 +21,7 @@ print <<HERE;
 
 
   PLEASE NOTE:
-  1) You will see several Win32::OLE errors during testing. This is expected 
+  1) You will see several Win32::OLE errors during testing. This is expected
      as we should try and test failure as well as success :)
   2) 1 message is sent during testing. If Outlook requests your acceptance,
      you may decline, as the testing will acknowledge this.
