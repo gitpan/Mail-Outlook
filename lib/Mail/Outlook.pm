@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.14';
+$VERSION = '0.15';
 
 #----------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ Microsoft (R) Outlook (R).
 #----------------------------------------------------------------------------
 
 #############################################################################
-#Library Modules															#
+#Library Modules                                                            #
 #############################################################################
 
 use lib qw(./lib);
@@ -116,7 +116,7 @@ use Mail::Outlook::Message;
 #----------------------------------------------------------------------------
 
 #############################################################################
-#Interface Functions														#
+#Interface Functions                                                        #
 #############################################################################
 
 =head1 METHODS
@@ -129,33 +129,33 @@ failure. To see the last error use 'Win32::OLE->LastError();'.
 =cut
 
 sub new {
-	my ($self, $foldername) = @_;
+    my ($self, $foldername) = @_;
 
-	#open the Outlook program and get a hook into it
-	my $outlook;
-	eval {
-		$outlook = Win32::OLE->GetActiveObject('Outlook.Application')
-	};
-	if ($@ || !defined($outlook)) {
-		$outlook = Win32::OLE->new('Outlook.Application', sub {$_[0]->Quit;})
-			or return undef;
-	}
-	my $namespace = $outlook->GetNameSpace("MAPI")	or return undef;
+    #open the Outlook program and get a hook into it
+    my $outlook;
+    eval {
+        $outlook = Win32::OLE->GetActiveObject('Outlook.Application')
+    };
+    if ($@ || !defined($outlook)) {
+        $outlook = Win32::OLE->new('Outlook.Application', sub {$_[0]->Quit;})
+            or return undef;
+    }
+    my $namespace = $outlook->GetNameSpace("MAPI")  or return undef;
 
-	# create an attributes hash
-	my $atts = {
-		'outlook'	=> $outlook,
-		'namespace'	=> $namespace,
-		'objfolder'	=> undef,
-	};
+    # create an attributes hash
+    my $atts = {
+        'outlook'   => $outlook,
+        'namespace' => $namespace,
+        'objfolder' => undef,
+    };
 
-	# create the object
-	bless $atts, $self;
+    # create the object
+    bless $atts, $self;
 
     # create a folder if required
-	$atts->{objfolder} = $atts->folder($foldername)	if($foldername);
+    $atts->{objfolder} = $atts->folder($foldername) if($foldername);
 
-	return $atts;
+    return $atts;
 }
 
 sub DESTROY {
@@ -184,9 +184,9 @@ Gets or sets the current folder object.
 =cut
 
 sub folder {
-	my ($self,$foldername) = @_;
-	return $self->{objfolder}	unless($foldername);
-	$self->{objfolder} = Mail::Outlook::Folder->new($self,$foldername);
+    my ($self,$foldername) = @_;
+    return $self->{objfolder}   unless($foldername);
+    $self->{objfolder} = Mail::Outlook::Folder->new($self,$foldername);
 }
 
 =head2 create(%hash)
@@ -197,11 +197,11 @@ object or undef on failure.
 =cut
 
 sub create {
-	my ($self,%hash) = @_;
+    my ($self,%hash) = @_;
 
-	my $msg = Mail::Outlook::Message->new($self->{outlook})	or return undef;
-	$msg->create(%hash);
-	return $msg;
+    my $msg = Mail::Outlook::Message->new($self->{outlook}) or return undef;
+    $msg->create(%hash);
+    return $msg;
 }
 
 1;

@@ -1,5 +1,9 @@
 Revision history for Perl distribution Mail-Outlook.
 
+0.15	10/02/2009
+	- patch from Alceu Rodrigues de Freitas Junior to add save() method to
+	  Mail::Outlook::Message, to save a new message in the Drafts folder.
+
 0.14	18/09/2008
 	- add all_folders patch (RT#27531). Thanks to Jerome Quelin.
 	- fixed 30failures.t to skip properly if Test::MockObject is not 

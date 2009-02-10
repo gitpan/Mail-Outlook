@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.14';
+$VERSION = '0.15';
 
 #----------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ Handles the Message interaction with the Outlook API.
 #----------------------------------------------------------------------------
 
 #############################################################################
-#Library Modules															#
+#Library Modules                                                            #
 #############################################################################
 
 use File::Basename;
@@ -42,7 +42,7 @@ my %autosubs = map {$_ => 1} @autosubs;
 #----------------------------------------------------------------------------
 
 #############################################################################
-#Interface Functions														#
+#Interface Functions                                                        #
 #############################################################################
 
 =head1 METHODS
@@ -69,18 +69,18 @@ or edit the appropriate line in _make_message().
 =cut
 
 sub new {
-	my ($self, $outlook, $message) = @_;
+    my ($self, $outlook, $message) = @_;
 
-	# create an attributes hash
-	my $atts = {
-		'outlook'	=> $outlook,
-		'message'	=> $message || undef,
-		'readonly'	=> 1,
-	};
+    # create an attributes hash
+    my $atts = {
+        'outlook'   => $outlook,
+        'message'   => $message || undef,
+        'readonly'  => 1,
+    };
 
-	# create the object
-	bless $atts, $self;
-	return $atts;
+    # create the object
+    bless $atts, $self;
+    return $atts;
 }
 
 sub DESTROY {}
@@ -92,17 +92,17 @@ Creates a new message. Option hash table can be used.
 =cut
 
 sub create {
-	my ($self,%hash) = @_;
+    my ($self,%hash) = @_;
 
-	# Create a new message object
-	$self->{message} = $self->{outlook}->CreateItem(olMailItem)
-		or return undef;
-	$self->{readonly} = 0;
+    # Create a new message object
+    $self->{message} = $self->{outlook}->CreateItem(olMailItem)
+        or return undef;
+    $self->{readonly} = 0;
 
-	# pre-populate the fields
-	foreach my $field (@autosubs) { $self->{$field} = $hash{$field} || ''; }
+    # pre-populate the fields
+    foreach my $field (@autosubs) { $self->{$field} = $hash{$field} || ''; }
 
-	return $self->{message};
+    return $self->{message};
 }
 
 =item display()
@@ -112,14 +112,14 @@ Creates a pre-populated New Message via Outlook. Returns 1 on success, 0 on fail
 =cut
 
 sub display {
-	my $self = shift;
+    my $self = shift;
 
     return 0    unless($self->_make_message(@_));
 
     # Display the email
-	$self->{message}->Display();
+    $self->{message}->Display();
 
-	return 1;
+    return 1;
 }
 
 =item send()
@@ -129,7 +129,7 @@ Sends the message. Returns 1 on success, 0 on failure.
 =cut
 
 sub send {
-	my $self = shift;
+    my $self = shift;
 
     return 0    unless($self->_make_message(@_));
 
@@ -142,7 +142,41 @@ sub send {
     return 2    if($@ =~ /Operation aborted/);
     return 0    if($@);
 
-	return 1;
+    return 1;
+}
+
+=item save()
+
+Excerpt from the MSDN:
+
+"Saves the Outlook  to the current folder or, if this is a new item, to the
+Outlook default folder for the item type."
+
+In other words, if the message is a new one, it will be saved to the default
+folder (B<Drafts>) in Outlook.
+
+Returns 1 on success, 0 on failure.
+
+=cut
+
+sub save {
+    my $self = shift;
+
+    return 0 unless ( $self->_make_message(@_) );
+
+    eval {
+        $self->{message}->Save();
+    };
+
+    my $err = Win32::OLE::LastError();
+
+    if($@ or $err) {
+        warn "error $@\n" if ( defined($@) );
+        warn Win32::OLE::LastError() . "\n" if ($err);
+        return 0;
+    }
+
+    return 1;
 }
 
 =item delete_message()
@@ -152,10 +186,10 @@ Remove this message.
 =cut
 
 sub delete_message {
-	my $self = shift;
+    my $self = shift;
 
-	$self->{message}->Delete();
-	$self = undef;
+    $self->{message}->Delete();
+    $self = undef;
 }
 
 # -------------------------------------
@@ -185,12 +219,12 @@ object variable if you are creating a message.
 =cut
 
 sub AUTOLOAD {
-	no strict;
-	my $name = $AUTOLOAD;
-	$name =~ s/^.*:://;
-	die "Unknown sub $AUTOLOAD\n"	unless($autosubs{$name});
+    no strict;
+    my $name = $AUTOLOAD;
+    $name =~ s/^.*:://;
+    die "Unknown sub $AUTOLOAD\n"   unless($autosubs{$name});
 
-	*$name = sub {
+    *$name = sub {
         my ($self,$value) = @_;
 
         if($self->{readonly}) {     # existing message
@@ -200,7 +234,7 @@ sub AUTOLOAD {
 
         @_==2 ? $self->{$name} = $value : $self->{$name};
     };
-	goto &$name;
+    goto &$name;
 }
 
 =item From()
@@ -212,18 +246,18 @@ list containing the Name and Address of the user.
 =cut
 
 sub From {
-	my $self = shift;
+    my $self = shift;
 
-	if($self->{readonly}) {	# existing message
+    if($self->{readonly}) { # existing message
         my $name;
         eval {$name = $self->{message}->SenderName()};
-		return $name;   # note this will be undef if we have been declined access
+        return $name;   # note this will be undef if we have been declined access
 
-	} else {				# new message
-		my $user = $self->{message}->UserProperties;
-		return	$user->{'Session'}->{'CurrentUser'}->{'Name'},
-				$user->{'Session'}->{'CurrentUser'}->{'Address'};
-	}
+    } else {                # new message
+        my $user = $self->{message}->UserProperties;
+        return  $user->{'Session'}->{'CurrentUser'}->{'Name'},
+                $user->{'Session'}->{'CurrentUser'}->{'Address'};
+    }
 }
 
 =item Sent()
@@ -234,9 +268,9 @@ return undef if the message has not been sent!
 =cut
 
 sub Sent {
-	my $self = shift;
+    my $self = shift;
 
-	return  unless($self->{readonly});  # existing messages only!
+    return  unless($self->{readonly});  # existing messages only!
 
     my $dt;
     eval {$dt = $self->{message}->SentOn()->Date() . ' ' . $self->{message}->SentOn()->Time()};
@@ -251,9 +285,9 @@ return undef if the message has not been sent!
 =cut
 
 sub Received {
-	my $self = shift;
+    my $self = shift;
 
-	return  unless($self->{readonly});  # existing messages only!
+    return  unless($self->{readonly});  # existing messages only!
 
     my $dt;
     eval {$dt = $self->{message}->ReceivedTime()->Date() . ' ' . $self->{message}->ReceivedTime()->Time()};
@@ -270,28 +304,28 @@ NOTE: Currently unimplemented, due to unreliable treatment by Exchange server.
 =cut
 
 sub XHeader {
-	return undef;
+    return undef;
 
-#	my ($self,$xheader,$value) = @_;
-#	return undef	unless($xheader =~ /^X-(.*)/);
+#   my ($self,$xheader,$value) = @_;
+#   return undef    unless($xheader =~ /^X-(.*)/);
 
-#	my $header = $1;
+#   my $header = $1;
 
-	# "That GUID (funky number between the curly braces) is the correct one
-	# for generating X-Headers." - Thomas J. Zamberlan on a Yahoo tech group
+    # "That GUID (funky number between the curly braces) is the correct one
+    # for generating X-Headers." - Thomas J. Zamberlan on a Yahoo tech group
 
-#	my $user = $self->{msg}->UserProperties;
-#	my $intXHeader = $self->{outlook}->GetIDsFromNames(
-#			$self->{namespace},
-#			"{00020386-0000-0000-C000-000000000046}",
-#			$xheader, 1);
+#   my $user = $self->{msg}->UserProperties;
+#   my $intXHeader = $self->{outlook}->GetIDsFromNames(
+#           $self->{namespace},
+#           "{00020386-0000-0000-C000-000000000046}",
+#           $xheader, 1);
 
-#	$self->{outlook}->HrSetOneProp(
-#			$self->{namespace},
-#			$intXHeader,
-#			$value,
-#			1);
-#	$self->{XHeaders}->{$xheader} = $value;
+#   $self->{outlook}->HrSetOneProp(
+#           $self->{namespace},
+#           $intXHeader,
+#           $value,
+#           1);
+#   $self->{XHeaders}->{$xheader} = $value;
 }
 
 =item Attach(@attachments)
@@ -302,23 +336,23 @@ if no arguments are passed to the method.
 =cut
 
 sub Attach {
-	my $self = shift;
+    my $self = shift;
 
     if($self->{readonly}) {     # existing message
         local $^W = 0;
         if($self->_ole_exists('Attachments')) {
-	        $self->{attachment} = $self->{message}->Attachments;
-	        return $self->{attachment};
-		}
+            $self->{attachment} = $self->{message}->Attachments;
+            return $self->{attachment};
+        }
         return undef;
     }
 
     if(@_) {
-    	push @{$self->{Attach}}, {file => $_, name => basename($_), attached => 0}	for(@_);
+        push @{$self->{Attach}}, {file => $_, name => basename($_), attached => 0}  for(@_);
     }
 
 
-	return map {$_->{file}} @{$self->{Attach}};
+    return map {$_->{file}} @{$self->{Attach}};
 }
 
 # -------------------------------------
@@ -332,22 +366,22 @@ sub _ole_exists {
 }
 
 sub _make_message {
-	my ($self,%hash) = @_;
+    my ($self,%hash) = @_;
 
-	# pre-populate the fields, if hash
-	foreach my $field (@autosubs) {
-		$self->{$field} = $hash{$field} if($hash{$field});
-	}
+    # pre-populate the fields, if hash
+    foreach my $field (@autosubs) {
+        $self->{$field} = $hash{$field} if($hash{$field});
+    }
 
-	# we need the basic message fields
-	return 0	unless($self->{To} && $self->{Subject} && $self->{Body});
+    # we need the basic message fields
+    return 0    unless($self->{To} && $self->{Subject} && $self->{Body});
 
-	# Build the message
-	$self->{message}->{To}		= $self->{To};
-	$self->{message}->{Cc}		= $self->{Cc}	if($self->{Cc});
-	$self->{message}->{Bcc}		= $self->{Bcc}	if($self->{Bcc});
-	$self->{message}->{Subject}	= $self->{Subject};
-	$self->{message}->{Body}	= $self->{Body};
+    # Build the message
+    $self->{message}->{To}      = $self->{To};
+    $self->{message}->{Cc}      = $self->{Cc}   if($self->{Cc});
+    $self->{message}->{Bcc}     = $self->{Bcc}  if($self->{Bcc});
+    $self->{message}->{Subject} = $self->{Subject};
+    $self->{message}->{Body}    = $self->{Body};
 
     if ($self->{Attach}) {
         $self->{attachment} = $self->{message}->Attachments;
@@ -358,7 +392,7 @@ sub _make_message {
         }
     }
 
-	return 1;
+    return 1;
 }
 
 1;
