@@ -1,3 +1,6 @@
+#!/usr/bin/perl -w
+use strict;
+
 use Test::More tests => 6;
 	
 use lib 't/testlib';

@@ -1,3 +1,7 @@
+#!/usr/bin/perl -w
+use strict;
+no strict 'subs';
+
 use Test::More tests => 12;
 
 use lib 't/testlib';

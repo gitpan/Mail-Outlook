@@ -7,8 +7,8 @@ use Test::More;
 plan skip_all => "Author tests not required for installation"
     unless ( $ENV{AUTOMATED_TESTING} );
 
-eval "use Test::CPAN::Meta";
-plan skip_all => "Test::CPAN::Meta required for testing META.yml" if $@;
+eval "use Test::CPAN::Meta::JSON";
+plan skip_all => "Test::CPAN::Meta::JSON required for testing META.json files" if $@;
 
 plan 'no_plan';
 

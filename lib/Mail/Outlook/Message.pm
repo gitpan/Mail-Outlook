@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION $AUTOLOAD);
-$VERSION = '0.15';
+$VERSION = '0.16';
 
 #----------------------------------------------------------------------------
 
@@ -489,14 +489,6 @@ Outlook (R) installed.
   Win32::OLE
   Win32::OLE::Const
 
-=head1 DSLIP
-
-  b - Beta testing
-  d - Developer
-  p - Perl-only
-  O - Object oriented
-  p - Standard-Perl: user may choose between GPL and Artistic
-
 =head1 BUGS, PATCHES & FIXES
 
 There are no known bugs at the time of this release. However, if you spot a
@@ -505,7 +497,7 @@ documentation, please submit a bug to the RT system (see link below). However,
 it would help greatly if you are able to pinpoint problems or even supply a
 patch.
 
-Fixes are dependant upon their severity and my availablity. Should a fix not
+Fixes are dependent upon their severity and my availability. Should a fix not
 be forthcoming, please feel free to (politely) remind me by sending an email
 to barbie@cpan.org .
 
@@ -518,13 +510,9 @@ RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright © 2003-2007 Barbie for Miss Barbell Productions.
+  Copyright © 2003-2013 Barbie for Miss Barbell Productions.
 
-  This library is free software; you can redistribute it and/or modify it under
-  the same terms as Perl itself, using the Artistic License.
-
-The full text of the licenses can be found in the Artistic file included with
-this distribution, or in perlartistic file as part of Perl installation, in
-the 5.8.1 release or later.
+  This distribution is free software; you can redistribute it and/or
+  modify it under the Artistic License v2.
 
 =cut

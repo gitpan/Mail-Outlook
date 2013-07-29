@@ -24,5 +24,4 @@ Win32::OLE::Const->EnumTypeLibs(sub {
     $Library{$title} = "$maj.$min";
 });
 
-
 1;

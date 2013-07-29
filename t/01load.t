@@ -1,3 +1,6 @@
+#!/usr/bin/perl -w
+use strict;
+
 use Test::More tests => 3;
 
 use lib 't/testlib';
@@ -15,4 +18,3 @@ SKIP: {
 	use_ok( 'Mail::Outlook::Message' );
 }
 }
-

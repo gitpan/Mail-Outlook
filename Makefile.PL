@@ -1,19 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use 5.006;
+
 use ExtUtils::MakeMaker;
+
 WriteMakefile(
-    'NAME'		    => 'Mail::Outlook',
-    'VERSION_FROM'	=> 'lib/Mail/Outlook.pm',
-    'PREREQ_PM'		=> {
-        Cwd                 => 0,
-        File::Basename      => 0,
-		Win32::OLE          => 0,
-		Win32::OLE::Const   => 0,
-		Test::More          => 0.70,
-	},
-	NO_META			=> 1,
-    ($] >= 5.005 ?
-      (ABSTRACT_FROM => 'lib/Mail/Outlook.pm',
-       AUTHOR       => 'Barbie <barbie@cpan.org>') : ()),
+    AUTHOR              => 'Barbie <barbie@cpan.org>',
+    NAME                => 'Mail::Outlook',
+    VERSION_FROM        => 'lib/Mail/Outlook.pm',
+    ABSTRACT_FROM       => 'lib/Mail/Outlook.pm',
+    NO_META             => 1,
+    PREREQ_PM           => {
+
+        # prereqs
+        'File::Basename'    => '0',
+		'Win32::OLE'        => '0',
+		'Win32::OLE::Const' => '0',
+
+        # build/test prereqs
+        'Cwd'               => '0',
+        'IO::File'          => '0',
+        'Test::More'        => '0.70'
+
+    }
 );
+
 
 print <<HERE;
 

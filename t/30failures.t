@@ -1,3 +1,5 @@
+#!/usr/bin/perl -w
+use strict;
 
 # DO NOT COPY THESE TWO LINES UNLESS YOU UNDERSTAND WHAT THEY DO.
 # ... AND EVEN THEN DON'T COPY THEM!

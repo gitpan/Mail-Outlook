@@ -1,3 +1,7 @@
+#!/usr/bin/perl -w
+use strict;
+no strict 'subs';
+
 use Test::More tests => 37;
 
 use lib 't/testlib';
@@ -96,7 +100,6 @@ if($@ =~ /Network problems/) {
 	skip "Microsoft Outlook cannot connect to the server.\n", $tests;
 	exit;
 }
-
 
 sub TestMessage {
     my $m = shift;

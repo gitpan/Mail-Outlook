@@ -56,14 +56,6 @@ TODO
   Other Mail Folders
   More Tests
 
-DSLIP
-
-  b - Beta testing
-  d - Developer
-  p - Perl-only
-  O - Object oriented
-  p - Standard-Perl: user may choose between GPL and Artistic
-
 AUTHOR
 
 Barbie <barbie@cpan.org>
@@ -71,8 +63,7 @@ for Miss Barbell Productions, http://www.missbarbell.co.uk
 
 COPYRIGHT AND LICENSE
 
-Copyright (C) 2003-2006 Barbie & Miss Barbell Productions.
+Copyright (C) 2003-2013 Barbie & Miss Barbell Productions.
 
-This module is free software; you can redistribute it and/or modify it 
-under the same terms as Perl itself.
-
+This distribution is free software; you can redistribute it and/or
+modify it under the Artistic License v2.
