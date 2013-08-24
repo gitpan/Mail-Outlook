@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
-no strict 'subs';
+# no strict 'subs';
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 use lib 't/testlib';
 
@@ -49,11 +49,15 @@ SKIP: {
 	$folder = $outlook->folder('ANameThatShouldNotExist');
 	is($folder,undef);
 
-	eval "use Win32::OLE::Const 'Microsoft Outlook'";
-	skip "Unable to make a connection to Microsoft Outlook\n", 1	if($@);
+	ok( eval {
+	use Win32::OLE::Const 'Microsoft Outlook';
+	die "Unable to make a connection to Microsoft Outlook\n" if($@);
 
 	$folder = $outlook->folder(olFolderInbox);
 	isa_ok($folder,'Mail::Outlook::Folder');
+	1;
+	}, "Connected to Microsoft Outlook and tests Mail::Outlook::Folder" );
+
 }
 
 };
