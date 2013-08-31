@@ -1,6 +1,6 @@
 {
     "name": "Mail-Outlook",
-    "version": "0.16",
+    "version": "0.017_004",
     "abstract": "An mail interface to Microsoft (R) Outlook (R)",
     "author": ["Barbie <barbie@cpan.org>"],
 

@@ -1,5 +1,15 @@
 Revision history for Perl distribution Mail-Outlook.
 
+0.17.4  2013-08-31
+        0.17.1-4 are attempts to get the distribution on to CPAN and to
+        get it passed by CPAN Testers. No new functionality.
+        Copyright character changed to E<copy> to all three .pm files.
+        20folders.t changed to skip if Outlook not installed.
+        Use version numbering as in 
+        http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
+        so this one is 0.017_004.
+        Version changed in various json and yml files. 
+
 0.17    2013-08-24
         - Fixed RT#73880 which was a scoping problem in 20folders.t
         - Fixed RT#35856 used suggestion from davidmcb which exception that

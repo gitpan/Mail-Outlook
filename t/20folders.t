@@ -2,7 +2,7 @@
 use strict;
 # no strict 'subs';
 
-use Test::More tests => 13;
+use Test::More tests => 12;
 
 use lib 't/testlib';
 
@@ -29,34 +29,42 @@ SKIP: {
 
     my $name = $message->From();
     skip "Access to Microsoft Outlook has been declined", ($tests - 2)  unless($name);
-	ok($name);
+	ok($name, "name is true");
 
 	$message = $folder->next;
 	isa_ok($message,'Mail::Outlook::Message');
-	ok($message->From());
+	ok($message->From(), "folder->next() return a message with a true From method.");
 
 	$folder = $outlook->folder('Inbox');
 	$message = $folder->last;
 	isa_ok($message,'Mail::Outlook::Message');
-	ok($message->From());
+	ok($message->From(), "folder->last() return a message with a true From method." );
 
 	$message = $folder->previous;
 	isa_ok($message,'Mail::Outlook::Message');
-	ok($message->From());
+	ok($message->From(), "folder->previous() return a message with a true From method.");
 
 	$folder = $outlook->folder('Inbox/ANameThatShouldNotExist');
-	is($folder,undef);
+	is($folder,undef, 'Got undef when looking for Inbox/ANameThatShouldNotExist');
 	$folder = $outlook->folder('ANameThatShouldNotExist');
-	is($folder,undef);
+	is($folder,undef, 'Got undef when looking for ANameThatShouldNotExist');
 
-	ok( eval {
+	eval {
 	use Win32::OLE::Const 'Microsoft Outlook';
-	die "Unable to make a connection to Microsoft Outlook\n" if($@);
-
-	$folder = $outlook->folder(olFolderInbox);
-	isa_ok($folder,'Mail::Outlook::Folder');
+	my $connected = 1;
+	if ( $@ ) {
+	  diag "Unable to make a connection to Microsoft Outlook.";
+	  $connected = undef;
+        }
+        
+	SKIP: { skip "Unable to make a connection to Microsoft Outlook.", 1 unless $connected;
+	  $folder = $outlook->folder(olFolderInbox);
+	  isa_ok($folder,'Mail::Outlook::Folder');
+	};
+	
 	1;
-	}, "Connected to Microsoft Outlook and tests Mail::Outlook::Folder" );
+	
+	}|| diag( $@ );
 
 }
 

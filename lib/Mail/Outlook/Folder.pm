@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.16';
+$VERSION = '0.017_004';
 
 #----------------------------------------------------------------------------
 
@@ -269,7 +269,7 @@ RT: L<http://rt.cpan.org/Public/Dist/Display.html?Name=Mail-Outlook>
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright © 2003-2013 Barbie for Miss Barbell Productions.
+  Copyright E<copy> 2003-2013 Barbie for Miss Barbell Productions.
 
   This distribution is free software; you can redistribute it and/or
   modify it under the Artistic License v2.
