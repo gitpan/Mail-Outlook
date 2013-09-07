@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.18';
+$VERSION = '0.19';
 
 #----------------------------------------------------------------------------
 
@@ -113,6 +113,12 @@ sub new {
     bless $atts, $self;
     return $atts;
 }
+
+=item DESTROY
+
+Empty sub
+
+=cut
 
 sub DESTROY {}
 

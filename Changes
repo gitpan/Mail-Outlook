@@ -1,6 +1,13 @@
 Revision history for Perl distribution Mail-Outlook.
 
-0.18    0.017_004 is a developer release so nothing happened. Try again.
+0.19    2013-09-07
+        Last weeks release was indexed but did not pass CPAN Testers.
+        Some POD was missing, 20folders.t still did not skip correctly
+        if Mail::Outlook was missing, Changes file was not formatted
+        correctly.
+        
+0.18    2013-08-31
+        0.017_004 is a developer release so nothing happened. Try again.
 
 0.17.4  2013-08-31
         0.17.1-4 are attempts to get the distribution on to CPAN and to

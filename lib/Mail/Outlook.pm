@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.18';
+$VERSION = '0.19';
 
 #----------------------------------------------------------------------------
 
@@ -157,6 +157,12 @@ sub new {
 
     return $atts;
 }
+
+=head2 DESTROY
+
+Free unused Win32::OLE libraries
+
+=cut
 
 sub DESTROY {
     Win32::OLE->FreeUnusedLibraries();
