@@ -7,7 +7,7 @@ use Test::More tests => 14;
 
 use lib 't/testlib';
 
-my $tests = 12;
+my $tests = 14;
 
 eval {
 
