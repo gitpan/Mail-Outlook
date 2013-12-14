@@ -12,6 +12,7 @@ lib/Mail/Outlook.pm
 lib/Mail/Outlook/Folder.pm
 lib/Mail/Outlook/Message.pm
 t/01load.t
+t/02load.t
 t/10create.t
 t/11createhash.t
 t/12display.t

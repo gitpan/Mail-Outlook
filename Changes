@@ -1,5 +1,13 @@
 Revision history for Perl distribution Mail-Outlook.
 
+0.20    2013-12-14
+        Fixed 89168 by deleting MYMETA files.
+        Changed 91podcover so that it doesn't error if the require fails.
+        Added 02load.t to test that the Outlook OLE constants have been
+        imported. This will cause the installation to fail if Outlook
+        is missing. I think that's more sensible that skipping the tests
+        and installing anyway.
+
 0.19    2013-09-07
         Last weeks release was indexed but did not pass CPAN Testers.
         Some POD was missing, 20folders.t still did not skip correctly
