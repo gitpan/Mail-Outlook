@@ -6,6 +6,8 @@ use 5.006;
 
 use ExtUtils::MakeMaker;
 
+die "No support for OS" if $^O !~ m/Win/;
+
 WriteMakefile(
     AUTHOR              => 'Barbie <barbie@cpan.org>',
     NAME                => 'Mail::Outlook',
@@ -16,8 +18,9 @@ WriteMakefile(
 
         # prereqs
         'File::Basename'    => '0',
-		'Win32::OLE'        => '0',
-		'Win32::OLE::Const' => '0',
+	'Win32::OLE'        => '0',
+	'Win32::OLE::Const' => '0',
+	'Alien::Microsoft::Outlook => '0',
 
         # build/test prereqs
         'Cwd'               => '0',

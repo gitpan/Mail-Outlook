@@ -1,5 +1,12 @@
 Revision history for Perl distribution Mail-Outlook.
 
+0.21    2013-12-15
+        Added Alien::Microsoft::Outlook as a dependency. Installation
+        should now fail due to a missing dependency if Microsoft Outlook
+        is not installed. If this works, I'll tidy up the tests in the
+        next release.
+        Altered Makefile.PL to mark this distribution as Windows only.
+        
 0.20    2013-12-14
         Fixed 89168 by deleting MYMETA files.
         Changed 91podcover so that it doesn't error if the require fails.
