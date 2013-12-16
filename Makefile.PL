@@ -20,7 +20,7 @@ WriteMakefile(
         'File::Basename'    => '0',
 	'Win32::OLE'        => '0',
 	'Win32::OLE::Const' => '0',
-	'Alien::Microsoft::Outlook => '0',
+	'Alien::Microsoft::Outlook' => '0',
 
         # build/test prereqs
         'Cwd'               => '0',

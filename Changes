@@ -1,5 +1,8 @@
 Revision history for Perl distribution Mail-Outlook.
 
+0.22    2013-12-16
+        Fix syntax error.
+
 0.21    2013-12-15
         Added Alien::Microsoft::Outlook as a dependency. Installation
         should now fail due to a missing dependency if Microsoft Outlook
