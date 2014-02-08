@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use vars qw($VERSION);
-$VERSION = '0.21';
+$VERSION = '0.23';
 
 #----------------------------------------------------------------------------
 
@@ -193,6 +193,26 @@ sub folder {
     my ($self,$foldername) = @_;
     return $self->{objfolder}   unless($foldername);
     $self->{objfolder} = Mail::Outlook::Folder->new($self,$foldername);
+}
+
+=head2 all_accounts
+
+Return a list of the available accounts. Each element is a hash ref with two
+keys: address and account. "address" is the SMPT address, "account" is the Account
+object.
+
+=cut
+
+sub all_accounts {
+  my $self = shift;
+  my $session = $self->{namespace}->Session || return;
+  my $accounts = $session->Accounts || return;
+  my @smtp_addresses = ();
+  for ( my $i=1;$i<=$accounts->{Count};$i++ ) {
+    my $item = $accounts->Item($i);
+    push( @smtp_addresses, { address => $item->smtpAddress, account => $item } );  
+  }
+  return @smtp_addresses;  
 }
 
 =head2 create(%hash)
